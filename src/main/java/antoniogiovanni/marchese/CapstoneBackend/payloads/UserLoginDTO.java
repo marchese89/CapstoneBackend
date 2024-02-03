@@ -6,9 +6,9 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 public record UserLoginDTO(
-        @Email
-        @NotEmpty
-        @NotNull
+        @Email(message = "email not valid")
+        @NotEmpty(message = "email cannot be empty")
+        @NotNull(message = "email cannot be null")
         String email,
         @ValidPassword(message = "password not valid")
         String password) {

@@ -24,7 +24,7 @@ public class AuthService {
         if (bcrypt.matches(userLoginDTO.password(),user.getPassword())) {
             return jwtTools.createToken(user);
         } else {
-            throw new UnauthorizedException("Credenziali non valide!");
+            throw new UnauthorizedException("Invalid credentials!");
         }
     }
 }

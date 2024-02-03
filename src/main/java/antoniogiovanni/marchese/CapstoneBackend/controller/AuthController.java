@@ -25,6 +25,7 @@ public class AuthController {
     UserService userService;
 
     @PostMapping("/login")
+    @ResponseStatus(HttpStatus.OK)
     public UserLoginResponseDTO login(@RequestBody @Validated UserLoginDTO body, BindingResult validation) {
         if (validation.hasErrors()) {
             throw new BadRequestException(validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
