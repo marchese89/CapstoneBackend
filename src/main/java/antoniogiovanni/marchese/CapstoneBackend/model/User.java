@@ -17,17 +17,25 @@ import java.util.UUID;
 @Table(name = "users")
 @Getter
 @Setter
+@Inheritance(strategy = InheritanceType.JOINED)
 public class User implements UserDetails {
     @Id
     @GeneratedValue
     @Setter(AccessLevel.NONE)
     private UUID id;
+
+    private String name;
+
+    private String surname;
+
     @Column(unique = true)
     private String email;
 
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
+    @OneToOne(mappedBy = "user")
+    private Address address;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

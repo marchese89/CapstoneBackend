@@ -28,16 +28,14 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        // Disabilitiamo alcuni comportamenti di default
+        //disable default behavior
         httpSecurity.formLogin(AbstractHttpConfigurer::disable);
         httpSecurity.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         httpSecurity.cors(Customizer.withDefaults());
-        // Aggiungiamo filtri custom
+        //add jwt filter
         httpSecurity.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // Aggiungere/Rimuovere regole di protezione su singoli endpoint
-        // in maniera che venga/non venga richiesta l'autenticazione per accedervi
         httpSecurity.authorizeHttpRequests(request -> request.requestMatchers("/**").permitAll());
 
         return httpSecurity.build();
@@ -55,7 +53,7 @@ public class SecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("*"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Registro la configurazione CORS fatta su tutti gli endpoint della mia applicazione
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }

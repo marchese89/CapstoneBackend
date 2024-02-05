@@ -1,5 +1,5 @@
 package antoniogiovanni.marchese.CapstoneBackend.model.enums;
 
-public enum Role {
-    ADMIN,TEACHER,STUDENT
+public enum RequestState {
+    OPEN,CLOSED
 }

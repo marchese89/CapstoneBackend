@@ -49,9 +49,25 @@ public class AuthTest {
                 .post("http://localhost:3001/auth/register");
         response.then().assertThat().statusCode(201);
     }
-
     @Test
     @Order(2)
+    void registerNo() throws JsonProcessingException {
+
+        String requestBody = objectMapper.writeValueAsString(
+                new UserDTO(email,
+                        "cvoYs99iS0N987",
+                        Role.ADMIN));
+
+        Response response = given()
+                .contentType("application/json")
+                .body(requestBody)
+                .when()
+                .post("http://localhost:3001/auth/register");
+        response.then().assertThat().statusCode(400);
+    }
+
+    @Test
+    @Order(3)
     void login() throws JsonProcessingException {
         String requestBody = objectMapper.writeValueAsString(
                 new UserLoginDTO(email,
@@ -67,8 +83,24 @@ public class AuthTest {
         authToken = jsonNode.get("token").toString();
     }
     @Test
-    @Order(3)
+    @Order(4)
     void tokenOk() throws JsonProcessingException {
         assertNotNull(authToken);
     }
+    @Test
+    @Order(5)
+    void loginNo() throws JsonProcessingException {
+        String requestBody = objectMapper.writeValueAsString(
+                new UserLoginDTO(email,
+                        "cvoYs99iS.N987@e"));
+
+        Response response = given()
+                .contentType("application/json")
+                .body(requestBody)
+                .when()
+                .post("http://localhost:3001/auth/login");
+        response.then().assertThat().statusCode(401);
+
+    }
+
 }

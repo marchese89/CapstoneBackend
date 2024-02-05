@@ -1,13 +1,10 @@
 package antoniogiovanni.marchese.CapstoneBackend.controller;
 
 
+import antoniogiovanni.marchese.CapstoneBackend.payloads.*;
 import antoniogiovanni.marchese.CapstoneBackend.service.UserService;
 import antoniogiovanni.marchese.CapstoneBackend.exceptions.BadRequestException;
 import antoniogiovanni.marchese.CapstoneBackend.model.User;
-import antoniogiovanni.marchese.CapstoneBackend.payloads.ResponseDTO;
-import antoniogiovanni.marchese.CapstoneBackend.payloads.UserDTO;
-import antoniogiovanni.marchese.CapstoneBackend.payloads.UserLoginDTO;
-import antoniogiovanni.marchese.CapstoneBackend.payloads.UserLoginResponseDTO;
 import antoniogiovanni.marchese.CapstoneBackend.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -41,6 +38,15 @@ public class AuthController {
             throw new BadRequestException(validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
         }
         User newUser = userService.save(userDTO);
+        return new ResponseDTO(newUser.getId());
+    }
+    @PostMapping("registerStudent")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseDTO createStudent(@RequestBody @Validated StudentRegisterDTO studentRegisterDTO, BindingResult validation) {
+        if (validation.hasErrors()) {
+            throw new BadRequestException(validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
+        }
+        User newUser = userService.save(studentRegisterDTO);
         return new ResponseDTO(newUser.getId());
     }
 }
