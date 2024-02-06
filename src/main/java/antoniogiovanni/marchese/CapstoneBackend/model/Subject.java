@@ -14,9 +14,9 @@ import java.util.UUID;
 @Setter
 public class Subject {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private UUID id;
+    private Long id;
     @Column(unique = true)
     private String name;
 

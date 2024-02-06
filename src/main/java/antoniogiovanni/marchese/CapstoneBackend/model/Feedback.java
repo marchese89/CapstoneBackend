@@ -13,9 +13,9 @@ import java.util.UUID;
 @Setter
 public class Feedback {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private UUID id;
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "student_id")
     private Student student;

@@ -16,17 +16,19 @@ import java.util.UUID;
 @Setter
 public class Request {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private UUID id;
+    private Long id;
     private String questionUrl;
     private String solutionUrl;
+    @ManyToOne
+    @JoinColumn(name = "student_id")
     private Student student;
     @OneToMany(mappedBy = "request")
-    private List<Solution> teacherList;
+    private List<Solution> solutionList;
 
     @Enumerated(EnumType.STRING)
     private RequestState requestState;
-    @OneToOne
+    @OneToOne(mappedBy = "request")
     private Invoice invoice;
 }

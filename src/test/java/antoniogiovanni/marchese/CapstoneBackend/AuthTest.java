@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
+import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,11 @@ public class AuthTest {
     public static void setUpEmail() {
         email = faker.name().username()+"@"+faker.internet().domainName();
     }
+
+    @BeforeAll
+    public static void setUp() {
+        RestAssured.baseURI = "http://localhost:3001";
+    }
     @Test
     @Order(1)
     void register() throws JsonProcessingException {
@@ -46,7 +52,7 @@ public class AuthTest {
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .post("http://localhost:3001/auth/register");
+                .post("/auth/register");
         response.then().assertThat().statusCode(201);
     }
     @Test
@@ -62,7 +68,7 @@ public class AuthTest {
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .post("http://localhost:3001/auth/register");
+                .post("/auth/register");
         response.then().assertThat().statusCode(400);
     }
 
@@ -77,7 +83,7 @@ public class AuthTest {
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .post("http://localhost:3001/auth/login");
+                .post("/auth/login");
         response.then().assertThat().statusCode(200);
         JsonNode jsonNode = objectMapper.readTree(response.body().asString());
         authToken = jsonNode.get("token").toString();
@@ -98,7 +104,7 @@ public class AuthTest {
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .post("http://localhost:3001/auth/login");
+                .post("/auth/login");
         response.then().assertThat().statusCode(401);
 
     }

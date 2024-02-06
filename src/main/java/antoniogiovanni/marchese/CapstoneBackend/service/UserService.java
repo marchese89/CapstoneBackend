@@ -7,6 +7,7 @@ import antoniogiovanni.marchese.CapstoneBackend.model.Address;
 import antoniogiovanni.marchese.CapstoneBackend.model.Student;
 import antoniogiovanni.marchese.CapstoneBackend.model.User;
 import antoniogiovanni.marchese.CapstoneBackend.model.enums.Role;
+import antoniogiovanni.marchese.CapstoneBackend.payloads.StudentModifyDTO;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.StudentRegisterDTO;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.UserDTO;
 import antoniogiovanni.marchese.CapstoneBackend.repository.AddressRepository;
@@ -83,26 +84,30 @@ public class UserService {
         return  student;
     }
 
-    public User findById(UUID id){
+    public User findById(Long id){
         return userRepository.findById(id).orElseThrow(()->new NotFoundException(id));
     }
 
-    public void findByIdAndDelete(UUID id){
+    public void findByIdAndDelete(Long id){
         User found = this.findById(id);
         userRepository.delete(found);
     }
 
-    public User findbyIdAndUpdate(UUID id, User body){
-        User found = this.findById(id);
-//        found.setCognome(body.getCognome());
-//        found.setNome(body.getNome());
-        found.setEmail(body.getEmail());
+    public Student findbyIdAndUpdateStudent(Long id, StudentModifyDTO studentModifyDTO,User user){
+        Student found = (Student) this.findById(id);
+        if(found.getId() != user.getId()){
+            throw new UnauthorizedException("cannot modify other student data!");
+        }
+        found.setName(studentModifyDTO.name());
+        found.setSurname(studentModifyDTO.surname());
+        found.setEmail(studentModifyDTO.email());
+        found.setCf(studentModifyDTO.cf());
         return userRepository.save(found);
 
     }
 
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("Utente con email " + email + " non trovato!"));
+        return userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("user with email " + email + " not found!"));
     }
 
 

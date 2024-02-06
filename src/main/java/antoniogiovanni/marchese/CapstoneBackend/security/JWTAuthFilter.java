@@ -45,7 +45,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
 
             // 3.1 Cerco l'utente a DB (l'id sta all'interno del token...)
             String id = jwtTools.extractIdFromToken(accessToken); // L'id è nel token quindi devo estrarlo da lì
-            User user = userService.findById(UUID.fromString(id));
+            User user = userService.findById(Long.parseLong(id));
 
             // 3.2 Informo Spring Security che l'utente è autenticato (se non faccio questo passaggio continuerò ad avere 403 come risposte)
             Authentication authentication = new UsernamePasswordAuthenticationToken(user, null,user.getAuthorities());

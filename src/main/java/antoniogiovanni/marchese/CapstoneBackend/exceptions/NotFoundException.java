@@ -1,9 +1,7 @@
 package antoniogiovanni.marchese.CapstoneBackend.exceptions;
 
-import java.util.UUID;
-
 public class NotFoundException extends RuntimeException {
-    public NotFoundException(UUID id) {
+    public NotFoundException(Long id) {
         super("Elemento con id " + id + " non trovato!");
     }
 

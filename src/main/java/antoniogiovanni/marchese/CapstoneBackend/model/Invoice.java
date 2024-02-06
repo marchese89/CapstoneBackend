@@ -10,14 +10,14 @@ import java.util.UUID;
 @Table(name = "invoices")
 public class Invoice {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private UUID id;
+    private Long id;
 
     private long number;
     private String invoiceFileUrl;
 
     private LocalDate issuingDate;
-    @OneToOne(mappedBy = "invoice")
+    @OneToOne
     private Request request;
 }

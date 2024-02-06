@@ -1,5 +1,5 @@
 package antoniogiovanni.marchese.CapstoneBackend.model.enums;
 
-public enum RequestState {
-    OPEN,CLOSED,CANCELLED
+public enum SolutionState {
+    ACCEPTED,REJECTED
 }

@@ -1,19 +1,22 @@
 package antoniogiovanni.marchese.CapstoneBackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.io.Serializable;
 import java.util.UUID;
 @Entity
 @Table(name = "addresses")
 @Getter
 @Setter
-public class Address {
+public class Address implements Serializable {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private UUID id;
+    private Long id;
     private String street;
     private String houseNumber;
 
@@ -24,6 +27,7 @@ public class Address {
 
     @OneToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
 }

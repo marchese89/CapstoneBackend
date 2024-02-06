@@ -1,5 +1,7 @@
 package antoniogiovanni.marchese.CapstoneBackend.model;
 
+import antoniogiovanni.marchese.CapstoneBackend.model.enums.Role;
+import antoniogiovanni.marchese.CapstoneBackend.model.enums.SolutionState;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,9 +14,9 @@ import java.util.UUID;
 @Setter
 public class Solution {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private UUID id;
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "request_id")
     private Request request;
@@ -22,4 +24,6 @@ public class Solution {
     @JoinColumn(name = "teacher_id")
     private Teacher teacher;
     private String solutionUrl;
+    @Enumerated(EnumType.STRING)
+    private SolutionState state;
 }
