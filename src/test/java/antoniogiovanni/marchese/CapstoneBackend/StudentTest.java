@@ -2,8 +2,8 @@ package antoniogiovanni.marchese.CapstoneBackend;
 
 import antoniogiovanni.marchese.CapstoneBackend.model.enums.Role;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.AddressModifyDTO;
-import antoniogiovanni.marchese.CapstoneBackend.payloads.StudentModifyDTO;
-import antoniogiovanni.marchese.CapstoneBackend.payloads.StudentRegisterDTO;
+import antoniogiovanni.marchese.CapstoneBackend.payloads.UserModifyDTO;
+import antoniogiovanni.marchese.CapstoneBackend.payloads.UserRegisterDTO;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.UserLoginDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -36,6 +36,8 @@ public class StudentTest {
         email = faker.name().username()+"@"+faker.internet().domainName();
     }
 
+    private static String password = "cvoYs99iS.N987@";
+
     @BeforeAll
     public static void setUp() {
         RestAssured.baseURI = "http://localhost:3001";
@@ -47,9 +49,9 @@ public class StudentTest {
 
 
         String requestBody = objectMapper.writeValueAsString(
-                new StudentRegisterDTO(faker.name().firstName(),
+                new UserRegisterDTO(faker.name().firstName(),
                         faker.name().lastName(),email,
-                        "cvoYs99iS.N987@",
+                        password,
                         "ERGITH76L23I763W",
                         Role.STUDENT,
                         faker.address().streetAddress(),
@@ -63,7 +65,7 @@ public class StudentTest {
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .post("/auth/registerStudent");
+                .post("/auth/register");
         response.then().assertThat().statusCode(201);
         JsonNode jsonNode = objectMapper.readTree(response.body().asString());
 
@@ -75,7 +77,7 @@ public class StudentTest {
     void login() throws JsonProcessingException {
         String requestBody = objectMapper.writeValueAsString(
                 new UserLoginDTO(email,
-                        "cvoYs99iS.N987@"));
+                        password));
 
         Response response = given()
                 .contentType("application/json")
@@ -93,7 +95,7 @@ public class StudentTest {
     void modifyStudent() throws JsonProcessingException {
 
         String requestBody = objectMapper.writeValueAsString(
-                new StudentModifyDTO("Modified Name",
+                new UserModifyDTO("Modified Name",
                         "Modified Surname",email,
                         "HHHHHHH76L23I763"
                 ));
@@ -112,7 +114,7 @@ public class StudentTest {
     @Order(4)
     void modifyStudentNo() throws JsonProcessingException {
         String requestBody = objectMapper.writeValueAsString(
-                new StudentModifyDTO(faker.name().firstName(),
+                new UserModifyDTO(faker.name().firstName(),
                         faker.name().lastName(),email,
                         "ERGITH76L23I763"
                 ));

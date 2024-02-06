@@ -3,16 +3,14 @@ package antoniogiovanni.marchese.CapstoneBackend.controller;
 import antoniogiovanni.marchese.CapstoneBackend.exceptions.BadRequestException;
 import antoniogiovanni.marchese.CapstoneBackend.model.Student;
 import antoniogiovanni.marchese.CapstoneBackend.model.User;
+import antoniogiovanni.marchese.CapstoneBackend.payloads.RequestDTO;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.ResponseDTO;
 import antoniogiovanni.marchese.CapstoneBackend.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,10 +30,15 @@ public class RequestController {
     @Value("${upload.dir}")
     private String uploadDir;
 
-    @PostMapping()
+    @PostMapping("/{subjectId}/{requestTitle}")
     @PreAuthorize("hasAnyAuthority('STUDENT')")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseDTO modifyStudent(@RequestParam("file") MultipartFile file, @AuthenticationPrincipal User currentUser) {
+    public ResponseDTO modifyStudent(
+            @RequestParam("file") MultipartFile file,
+            @PathVariable Long subjectId,
+            @PathVariable String requestTitle,
+            @AuthenticationPrincipal User currentUser
+    ) {
 
         if (file.isEmpty()) {
             throw new BadRequestException("file cannot be empty");
@@ -55,7 +58,7 @@ public class RequestController {
             e.printStackTrace();
             throw new BadRequestException("problems during upload");
         }
-
-        return new ResponseDTO(requestService.save(filePath,(Student) currentUser).getId());
+        RequestDTO requestDTO = new RequestDTO(requestTitle,subjectId);
+        return new ResponseDTO(requestService.save(filePath,(Student) currentUser,requestDTO).getId());
     }
 }

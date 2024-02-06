@@ -1,0 +1,9 @@
+package antoniogiovanni.marchese.CapstoneBackend.repository;
+
+import antoniogiovanni.marchese.CapstoneBackend.model.Subject;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface SubjectRepository extends JpaRepository<Subject,Long> {
+}

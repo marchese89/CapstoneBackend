@@ -33,20 +33,11 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseDTO createUser(@RequestBody @Validated UserDTO userDTO, BindingResult validation) {
+    public ResponseDTO createUser(@RequestBody @Validated UserRegisterDTO userRegisterDTO, BindingResult validation) {
         if (validation.hasErrors()) {
             throw new BadRequestException(validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
         }
-        User newUser = userService.save(userDTO);
-        return new ResponseDTO(newUser.getId());
-    }
-    @PostMapping("registerStudent")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ResponseDTO createStudent(@RequestBody @Validated StudentRegisterDTO studentRegisterDTO, BindingResult validation) {
-        if (validation.hasErrors()) {
-            throw new BadRequestException(validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
-        }
-        User newUser = userService.save(studentRegisterDTO);
+        User newUser = userService.save(userRegisterDTO);
         return new ResponseDTO(newUser.getId());
     }
 }

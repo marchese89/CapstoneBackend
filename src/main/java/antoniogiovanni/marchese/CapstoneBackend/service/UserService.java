@@ -5,12 +5,11 @@ import antoniogiovanni.marchese.CapstoneBackend.exceptions.NotFoundException;
 import antoniogiovanni.marchese.CapstoneBackend.exceptions.UnauthorizedException;
 import antoniogiovanni.marchese.CapstoneBackend.model.Address;
 import antoniogiovanni.marchese.CapstoneBackend.model.Student;
+import antoniogiovanni.marchese.CapstoneBackend.model.Teacher;
 import antoniogiovanni.marchese.CapstoneBackend.model.User;
 import antoniogiovanni.marchese.CapstoneBackend.model.enums.Role;
-import antoniogiovanni.marchese.CapstoneBackend.payloads.StudentModifyDTO;
-import antoniogiovanni.marchese.CapstoneBackend.payloads.StudentRegisterDTO;
-import antoniogiovanni.marchese.CapstoneBackend.payloads.UserDTO;
-import antoniogiovanni.marchese.CapstoneBackend.repository.AddressRepository;
+import antoniogiovanni.marchese.CapstoneBackend.payloads.UserModifyDTO;
+import antoniogiovanni.marchese.CapstoneBackend.payloads.UserRegisterDTO;
 import antoniogiovanni.marchese.CapstoneBackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,8 +19,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.UUID;
 
 @Service
 public class UserService {
@@ -38,50 +35,56 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
-    public User save(UserDTO userDTO){
-        userRepository.findByEmail(userDTO.email()).ifPresent(utente -> {
+
+    public User save(UserRegisterDTO userRegisterDTO){
+        userRepository.findByEmail(userRegisterDTO.email()).ifPresent(utente -> {
             throw new BadRequestException("L'email "+utente.getEmail()+ " è già in uso!");
         });
-        User newUser = new User();
 
-        newUser.setEmail(userDTO.email());
-        newUser.setPassword(bcrypt.encode(userDTO.password()));
-        if(userDTO.role() != null){
-            newUser.setRole(userDTO.role());
+        if(userRegisterDTO.role() == Role.STUDENT){
+            Student newStudent = new Student();
+            newStudent.setEmail(userRegisterDTO.email());
+            newStudent.setPassword(bcrypt.encode(userRegisterDTO.password()));
+            newStudent.setCf(userRegisterDTO.cf());
+            newStudent.setName(userRegisterDTO.name());
+            newStudent.setSurname(userRegisterDTO.surname());
+            newStudent.setRole(userRegisterDTO.role());
+            Student student = userRepository.save(newStudent);
+            //at this point we must save address
+            Address address = new Address();
+            address.setUser(userRepository.findById(student.getId()).orElseThrow(() -> new NotFoundException("student with ID: " + student.getId()+" not found")));
+            address.setCity(userRegisterDTO.city());
+            address.setStreet(userRegisterDTO.street());
+            address.setProvince(userRegisterDTO.province());
+            address.setPostalCode(userRegisterDTO.postalCode());
+            address.setHouseNumber(userRegisterDTO.houseNumber());
+            addressService.save(address);
+
+            return  student;
         }
-        return userRepository.save(newUser);
-    }
+        if (userRegisterDTO.role() == Role.TEACHER){
+            Teacher newTeacher = new Teacher();
+            newTeacher.setEmail(userRegisterDTO.email());
+            newTeacher.setPassword(bcrypt.encode(userRegisterDTO.password()));
+            newTeacher.setCf(userRegisterDTO.cf());
+            newTeacher.setName(userRegisterDTO.name());
+            newTeacher.setSurname(userRegisterDTO.surname());
+            newTeacher.setRole(userRegisterDTO.role());
+            Teacher teacher = userRepository.save(newTeacher);
+            //at this point we must save address
+            Address address = new Address();
+            address.setUser(userRepository.findById(teacher.getId()).orElseThrow(() -> new NotFoundException("student with ID: " + teacher.getId()+" not found")));
+            address.setCity(userRegisterDTO.city());
+            address.setStreet(userRegisterDTO.street());
+            address.setProvince(userRegisterDTO.province());
+            address.setPostalCode(userRegisterDTO.postalCode());
+            address.setHouseNumber(userRegisterDTO.houseNumber());
+            addressService.save(address);
 
-    public Student save(StudentRegisterDTO studentRegisterDTO){
-        userRepository.findByEmail(studentRegisterDTO.email()).ifPresent(utente -> {
-            throw new BadRequestException("L'email "+utente.getEmail()+ " è già in uso!");
-        });
-        Student newStudent = new Student();
-
-        newStudent.setEmail(studentRegisterDTO.email());
-        newStudent.setPassword(bcrypt.encode(studentRegisterDTO.password()));
-        newStudent.setCf(studentRegisterDTO.cf());
-        newStudent.setName(studentRegisterDTO.name());
-        newStudent.setSurname(studentRegisterDTO.surname());
-        //the role must be STUDENT
-        if(studentRegisterDTO.role() != Role.STUDENT){
-            throw new UnauthorizedException("the role must be student");
+            return  teacher;
         }
-        if(studentRegisterDTO.role() != null){
-            newStudent.setRole(studentRegisterDTO.role());
-        }
-        Student student = userRepository.save(newStudent);
-        //at this point we must save address
-        Address address = new Address();
-        address.setUser(userRepository.findById(student.getId()).orElseThrow(() -> new NotFoundException("student with ID: " + student.getId()+" not found")));
-        address.setCity(studentRegisterDTO.city());
-        address.setStreet(studentRegisterDTO.street());
-        address.setProvince(studentRegisterDTO.province());
-        address.setPostalCode(studentRegisterDTO.postalCode());
-        address.setHouseNumber(studentRegisterDTO.houseNumber());
-        addressService.save(address);
+        throw new UnauthorizedException("you can register only students or teachers");
 
-        return  student;
     }
 
     public User findById(Long id){
@@ -93,15 +96,15 @@ public class UserService {
         userRepository.delete(found);
     }
 
-    public Student findbyIdAndUpdateStudent(Long id, StudentModifyDTO studentModifyDTO,User user){
+    public Student findbyIdAndUpdate(Long id, UserModifyDTO userModifyDTO, User user){
         Student found = (Student) this.findById(id);
         if(found.getId() != user.getId()){
             throw new UnauthorizedException("cannot modify other student data!");
         }
-        found.setName(studentModifyDTO.name());
-        found.setSurname(studentModifyDTO.surname());
-        found.setEmail(studentModifyDTO.email());
-        found.setCf(studentModifyDTO.cf());
+        found.setName(userModifyDTO.name());
+        found.setSurname(userModifyDTO.surname());
+        found.setEmail(userModifyDTO.email());
+        found.setCf(userModifyDTO.cf());
         return userRepository.save(found);
 
     }

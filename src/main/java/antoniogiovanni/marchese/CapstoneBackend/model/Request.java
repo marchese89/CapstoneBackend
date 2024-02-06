@@ -21,6 +21,10 @@ public class Request {
     private Long id;
     private String questionUrl;
     private String solutionUrl;
+    private String title;
+    @ManyToOne
+    @JoinColumn(name = "subject_id")
+    private Subject subject;
     @ManyToOne
     @JoinColumn(name = "student_id")
     private Student student;

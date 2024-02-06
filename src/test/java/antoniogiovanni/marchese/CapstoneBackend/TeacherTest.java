@@ -1,9 +1,10 @@
 package antoniogiovanni.marchese.CapstoneBackend;
 
 import antoniogiovanni.marchese.CapstoneBackend.model.enums.Role;
-import antoniogiovanni.marchese.CapstoneBackend.payloads.RequestDTO;
-import antoniogiovanni.marchese.CapstoneBackend.payloads.UserRegisterDTO;
+import antoniogiovanni.marchese.CapstoneBackend.payloads.SubjectDTO;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.UserLoginDTO;
+import antoniogiovanni.marchese.CapstoneBackend.payloads.UserModifyDTO;
+import antoniogiovanni.marchese.CapstoneBackend.payloads.UserRegisterDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,13 +15,12 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.io.File;
-
 import static io.restassured.RestAssured.given;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class RequestTest {
+public class TeacherTest {
+
     @Autowired
     private ObjectMapper objectMapper;
     static Faker faker = new Faker();
@@ -28,6 +28,8 @@ public class RequestTest {
     private  static String email;
 
     private static String authToken;
+
+    private static Long registeredTeacher;
 
     private static String password = "cvoYs99iS.N987@";
 
@@ -43,7 +45,7 @@ public class RequestTest {
 
     @Test
     @Order(1)
-    void registerStudent() throws JsonProcessingException {
+    void registerTeacher() throws JsonProcessingException {
 
 
         String requestBody = objectMapper.writeValueAsString(
@@ -51,7 +53,7 @@ public class RequestTest {
                         faker.name().lastName(),email,
                         password,
                         "ERGITH76L23I763W",
-                        Role.STUDENT,
+                        Role.TEACHER,
                         faker.address().streetAddress(),
                         faker.address().buildingNumber(),
                         faker.address().city(),
@@ -63,9 +65,11 @@ public class RequestTest {
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .post("/auth/registerUser");
+                .post("/auth/register");
         response.then().assertThat().statusCode(201);
+        JsonNode jsonNode = objectMapper.readTree(response.body().asString());
 
+        registeredTeacher = Long.parseLong(jsonNode.get("id").toString());
     }
 
     @Test
@@ -88,15 +92,17 @@ public class RequestTest {
 
     @Test
     @Order(3)
-    void createRequest() throws JsonProcessingException {
-
-        File file = new File("./files_to_upload/a.txt");
+    void addSubject() throws JsonProcessingException {
+        String requestBody = objectMapper.writeValueAsString(
+                new SubjectDTO("Subject "+Math.random()
+                ));
 
         Response response = given()
                 .header("Authorization", "Bearer " + authToken)
-                .multiPart("file", file)
+                .contentType("application/json")
+                .body(requestBody)
                 .when()
-                .post("/requests/"+1+"/"+faker.name().fullName());
+                .post("/subjects");
         response.then().assertThat().statusCode(201);
     }
 }

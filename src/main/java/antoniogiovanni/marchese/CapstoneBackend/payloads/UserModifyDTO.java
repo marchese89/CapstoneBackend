@@ -1,23 +1,19 @@
 package antoniogiovanni.marchese.CapstoneBackend.payloads;
 
-import antoniogiovanni.marchese.CapstoneBackend.model.enums.Role;
-import antoniogiovanni.marchese.CapstoneBackend.utility.ValidPassword;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public record StudentModifyDTO(@NotNull
+public record UserModifyDTO(@NotNull
                                @NotEmpty
                                String name,
-                               @NotNull
+                            @NotNull
                                @NotEmpty
                                String surname,
-                               @Email
+                            @Email
                                String email,
-                               @NotNull
+                            @NotNull
                                @NotEmpty
                                @Size(min = 16,max = 16)
                                String cf) {
