@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,5 +22,5 @@ public class Subject {
     private String name;
 
     @ManyToMany(mappedBy = "subjectList")
-    private List<Teacher> teacherList;
+    private List<Teacher> teacherList = new ArrayList<>();
 }

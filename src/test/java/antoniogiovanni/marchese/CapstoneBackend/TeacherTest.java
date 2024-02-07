@@ -1,10 +1,7 @@
 package antoniogiovanni.marchese.CapstoneBackend;
 
 import antoniogiovanni.marchese.CapstoneBackend.model.enums.Role;
-import antoniogiovanni.marchese.CapstoneBackend.payloads.SubjectDTO;
-import antoniogiovanni.marchese.CapstoneBackend.payloads.UserLoginDTO;
-import antoniogiovanni.marchese.CapstoneBackend.payloads.UserModifyDTO;
-import antoniogiovanni.marchese.CapstoneBackend.payloads.UserRegisterDTO;
+import antoniogiovanni.marchese.CapstoneBackend.payloads.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -104,5 +101,19 @@ public class TeacherTest {
                 .when()
                 .post("/subjects");
         response.then().assertThat().statusCode(201);
+    }
+    @Test
+    @Order(4)
+    void modifyPassword() throws JsonProcessingException {
+        String requestBody = objectMapper.writeValueAsString(
+                new PasswordDTO("HH42@Ys99iS.N987"));
+
+        Response response = given()
+                .header("Authorization", "Bearer " + authToken)
+                .contentType("application/json")
+                .body(requestBody)
+                .when()
+                .put("/users/modPass");
+        response.then().assertThat().statusCode(200);
     }
 }

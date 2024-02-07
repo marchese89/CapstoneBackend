@@ -1,9 +1,7 @@
 package antoniogiovanni.marchese.CapstoneBackend.controller;
 
 import antoniogiovanni.marchese.CapstoneBackend.exceptions.BadRequestException;
-import antoniogiovanni.marchese.CapstoneBackend.model.Subject;
 import antoniogiovanni.marchese.CapstoneBackend.model.User;
-import antoniogiovanni.marchese.CapstoneBackend.payloads.AddressModifyDTO;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.ResponseDTO;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.SubjectDTO;
 import antoniogiovanni.marchese.CapstoneBackend.service.SubjectService;
@@ -27,10 +25,11 @@ public class SubjectController {
     @PreAuthorize("hasAnyAuthority('TEACHER')")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseDTO createSubject(@RequestBody @Validated SubjectDTO subjectDTO,
-                                     BindingResult validation){
+                                     BindingResult validation,
+                                     @AuthenticationPrincipal User currentUser){
         if (validation.hasErrors()) {
             throw new BadRequestException(validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
         }
-        return  new ResponseDTO(subjectService.save(subjectDTO).getId());
+        return  new ResponseDTO(subjectService.save(subjectDTO,currentUser).getId());
     }
 }

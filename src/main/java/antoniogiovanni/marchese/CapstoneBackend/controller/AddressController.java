@@ -3,7 +3,7 @@ package antoniogiovanni.marchese.CapstoneBackend.controller;
 import antoniogiovanni.marchese.CapstoneBackend.exceptions.BadRequestException;
 import antoniogiovanni.marchese.CapstoneBackend.model.Address;
 import antoniogiovanni.marchese.CapstoneBackend.model.User;
-import antoniogiovanni.marchese.CapstoneBackend.payloads.AddressModifyDTO;
+import antoniogiovanni.marchese.CapstoneBackend.payloads.AddressDTO;
 import antoniogiovanni.marchese.CapstoneBackend.service.AddressService;
 import antoniogiovanni.marchese.CapstoneBackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +24,14 @@ public class AddressController {
     @Autowired
     private UserService userService;
 
-    @PutMapping("/{id}")
+    @PutMapping
     @PreAuthorize("hasAnyAuthority('STUDENT','TEACHER')")
-    public Address modifyAddress(@PathVariable Long id,
-                                 @RequestBody @Validated AddressModifyDTO addressModifyDTO,
+    public Address modifyAddress(@RequestBody @Validated AddressDTO addressDTO,
                                  BindingResult validation,
                                  @AuthenticationPrincipal User currentUser) {
         if (validation.hasErrors()) {
             throw new BadRequestException(validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
         }
-        return addressService.findByIdAndUpdate(id,addressModifyDTO,currentUser);
+        return addressService.update(addressDTO,currentUser);
     }
 }

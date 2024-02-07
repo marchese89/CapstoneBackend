@@ -3,6 +3,8 @@ package antoniogiovanni.marchese.CapstoneBackend.controller;
 import antoniogiovanni.marchese.CapstoneBackend.exceptions.BadRequestException;
 import antoniogiovanni.marchese.CapstoneBackend.model.Student;
 import antoniogiovanni.marchese.CapstoneBackend.model.User;
+import antoniogiovanni.marchese.CapstoneBackend.payloads.PasswordDTO;
+import antoniogiovanni.marchese.CapstoneBackend.payloads.ResponseDTO;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.UserModifyDTO;
 import antoniogiovanni.marchese.CapstoneBackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +22,21 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @PutMapping("/{id}")
+    @PutMapping
     @PreAuthorize("hasAnyAuthority('STUDENT','TEACHER')")
-    public Student modifyUser(@PathVariable Long id, @RequestBody @Validated UserModifyDTO userModifyDTO, BindingResult validation, @AuthenticationPrincipal User currentUser) {
+    public User modifyUser(@RequestBody @Validated UserModifyDTO userModifyDTO, BindingResult validation, @AuthenticationPrincipal User currentUser) {
         if (validation.hasErrors()) {
             throw new BadRequestException(validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
         }
-        return userService.findbyIdAndUpdate(id, userModifyDTO, currentUser);
+        return userService.update(userModifyDTO, currentUser);
+    }
+    @PutMapping("/modPass")
+    @PreAuthorize("hasAnyAuthority('STUDENT','TEACHER')")
+    public ResponseDTO modifyUserPassword(@RequestBody @Validated PasswordDTO passwordDTO, BindingResult validation, @AuthenticationPrincipal User currentUser) {
+        if (validation.hasErrors()) {
+            throw new BadRequestException(validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
+        }
+        return new ResponseDTO(userService.updatePassword(passwordDTO, currentUser).getId());
     }
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('STUDENT','TEACHER')")

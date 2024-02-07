@@ -1,7 +1,7 @@
 package antoniogiovanni.marchese.CapstoneBackend;
 
 import antoniogiovanni.marchese.CapstoneBackend.model.enums.Role;
-import antoniogiovanni.marchese.CapstoneBackend.payloads.AddressModifyDTO;
+import antoniogiovanni.marchese.CapstoneBackend.payloads.AddressDTO;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.UserModifyDTO;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.UserRegisterDTO;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.UserLoginDTO;
@@ -105,7 +105,7 @@ public class StudentTest {
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .put("/users/"+registeredStudent);
+                .put("/users");
         response.then().assertThat().statusCode(200);
 
     }
@@ -124,7 +124,7 @@ public class StudentTest {
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .put("/users/"+registeredStudent);
+                .put("/users");
         response.then().assertThat().statusCode(400);
 
     }
@@ -132,19 +132,9 @@ public class StudentTest {
     @Test
     @Order(5)
     void modifyAddress() throws JsonProcessingException {
-        //we need to get address id from student
-        Response response0 = given()
-                .header("Authorization", "Bearer " + authToken)
-                .contentType("application/json")
-                .when()
-                .get("/users/"+registeredStudent);
-        response0.then().assertThat().statusCode(200);
-        JsonNode student = objectMapper.readTree(response0.body().asString());
-        JsonNode address = student.get("address");
-        String id = address.get("id").toString();
 
         String requestBody = objectMapper.writeValueAsString(
-                new AddressModifyDTO("New Street",
+                new AddressDTO("New Street",
                         "11",
                         "New City",
                         "TT",
@@ -156,7 +146,7 @@ public class StudentTest {
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .put("/addresses/"+id);
+                .put("/addresses");
         response.then().assertThat().statusCode(200);
 
     }
@@ -165,7 +155,7 @@ public class StudentTest {
     @Order(6)
     void modifyAddressNo() throws JsonProcessingException {
         String requestBody = objectMapper.writeValueAsString(
-                new AddressModifyDTO("New Street",
+                new AddressDTO("New Street",
                         "11",
                         "New City",
                         "T",
@@ -177,7 +167,7 @@ public class StudentTest {
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .put("/users/"+registeredStudent);
+                .put("/addresses");
         response.then().assertThat().statusCode(400);
 
     }

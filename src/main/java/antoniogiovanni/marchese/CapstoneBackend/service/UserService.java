@@ -8,6 +8,7 @@ import antoniogiovanni.marchese.CapstoneBackend.model.Student;
 import antoniogiovanni.marchese.CapstoneBackend.model.Teacher;
 import antoniogiovanni.marchese.CapstoneBackend.model.User;
 import antoniogiovanni.marchese.CapstoneBackend.model.enums.Role;
+import antoniogiovanni.marchese.CapstoneBackend.payloads.PasswordDTO;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.UserModifyDTO;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.UserRegisterDTO;
 import antoniogiovanni.marchese.CapstoneBackend.repository.UserRepository;
@@ -35,6 +36,9 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
+    public User save(User user){
+        return userRepository.save(user);
+    }
 
     public User save(UserRegisterDTO userRegisterDTO){
         userRepository.findByEmail(userRegisterDTO.email()).ifPresent(utente -> {
@@ -96,17 +100,20 @@ public class UserService {
         userRepository.delete(found);
     }
 
-    public Student findbyIdAndUpdate(Long id, UserModifyDTO userModifyDTO, User user){
-        Student found = (Student) this.findById(id);
-        if(found.getId() != user.getId()){
-            throw new UnauthorizedException("cannot modify other student data!");
-        }
+    public Student update( UserModifyDTO userModifyDTO, User user){
+        Student found = (Student) this.findById(user.getId());
         found.setName(userModifyDTO.name());
         found.setSurname(userModifyDTO.surname());
         found.setEmail(userModifyDTO.email());
         found.setCf(userModifyDTO.cf());
         return userRepository.save(found);
 
+    }
+
+    public User updatePassword(PasswordDTO passwordDTO, User user){
+        User user1 = this.findById(user.getId());
+        user1.setPassword(bcrypt.encode(passwordDTO.password()));
+        return userRepository.save(user1);
     }
 
     public User findByEmail(String email) {

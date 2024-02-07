@@ -63,7 +63,7 @@ public class RequestTest {
                 .contentType("application/json")
                 .body(requestBody)
                 .when()
-                .post("/auth/registerUser");
+                .post("/auth/register");
         response.then().assertThat().statusCode(201);
 
     }
