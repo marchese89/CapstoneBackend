@@ -54,7 +54,8 @@ public class AuthTest {
                         faker.address().buildingNumber(),
                         faker.address().city(),
                         "VV",
-                        "76539"
+                        "76539",
+                        "26789087654"
                 ));
 
         Response response = given()
@@ -78,7 +79,8 @@ public class AuthTest {
                         faker.address().buildingNumber(),
                         faker.address().city(),
                         "VV",
-                        "76539"
+                        "76539",
+                        "26789087654"
                 ));
 
         Response response = given()

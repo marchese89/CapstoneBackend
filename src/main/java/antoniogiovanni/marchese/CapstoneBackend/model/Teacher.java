@@ -22,4 +22,5 @@ public class Teacher extends User{
     )
     private List<Subject> subjectList = new ArrayList<>();
     private String cf;
+    private String piva;
 }

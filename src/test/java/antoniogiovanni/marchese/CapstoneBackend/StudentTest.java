@@ -58,7 +58,8 @@ public class StudentTest {
                         faker.address().buildingNumber(),
                         faker.address().city(),
                         "VV",
-                        "76539"
+                        "76539",
+                        null
                 ));
 
         Response response = given()

@@ -12,7 +12,10 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.stereotype.Component;
+import org.springframework.test.context.TestPropertySource;
 
 import java.io.File;
 
@@ -21,12 +24,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestPropertySource(locations = "classpath:application.properties")
+@Component
 public class RequestSolutionTest {
     @Autowired
     private ObjectMapper objectMapper;
     static Faker faker = new Faker();
 
-    private  static String email;
+    private static String email;
 
     private static String emailTeacher;
 
@@ -47,10 +52,20 @@ public class RequestSolutionTest {
 
     private static String password = "cvoYs99iS.N987@";
 
+    @Value("${email.student}")
+    public void setEmailStudent(String emailStudent){
+        RequestSolutionTest.email = emailStudent;
+    }
+
+    @Value("${email.teacher}")
+    public void setEmailTeacher(String email){
+        RequestSolutionTest.emailTeacher = email;
+    }
+
     @BeforeAll
     public static void setUpEmail() {
-        email = faker.name().username()+"@"+faker.internet().domainName();
-        emailTeacher = faker.name().username()+"@"+faker.internet().domainName();
+//        email = faker.name().username()+"@"+faker.internet().domainName();
+//        emailTeacher = faker.name().username()+"@"+faker.internet().domainName();
         emailTeacher2 = faker.name().username()+"@"+faker.internet().domainName();
     }
 
@@ -74,7 +89,8 @@ public class RequestSolutionTest {
                         faker.address().buildingNumber(),
                         faker.address().city(),
                         "VV",
-                        "76539"
+                        "76539",
+                        "26789087654"
                 ));
 
         Response response = given()
@@ -137,7 +153,8 @@ public class RequestSolutionTest {
                         faker.address().buildingNumber(),
                         faker.address().city(),
                         "VV",
-                        "76539"
+                        "76539",
+                        "26789087654"
                 ));
 
         Response response = given()
@@ -200,7 +217,8 @@ public class RequestSolutionTest {
                         faker.address().buildingNumber(),
                         faker.address().city(),
                         "VV",
-                        "76539"
+                        "76539",
+                        null
                 ));
 
         Response response = given()
@@ -284,8 +302,6 @@ public class RequestSolutionTest {
                 .when()
                 .post("/solutions/"+requestId+"/"+1000);
         response.then().assertThat().statusCode(201);
-//        JsonNode jsonNode = objectMapper.readTree(response.body().asString());
-//        solutionId = Long.parseLong(jsonNode.get("id").toString());
     }
 
     @Test

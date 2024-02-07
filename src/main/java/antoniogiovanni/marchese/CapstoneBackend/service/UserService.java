@@ -74,6 +74,7 @@ public class UserService {
             newTeacher.setName(userRegisterDTO.name());
             newTeacher.setSurname(userRegisterDTO.surname());
             newTeacher.setRole(userRegisterDTO.role());
+            newTeacher.setPiva(userRegisterDTO.piva());
             Teacher teacher = userRepository.save(newTeacher);
             //at this point we must save address
             Address address = new Address();

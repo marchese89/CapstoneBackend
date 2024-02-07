@@ -7,6 +7,8 @@ import antoniogiovanni.marchese.CapstoneBackend.model.Teacher;
 import antoniogiovanni.marchese.CapstoneBackend.model.User;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.ResponseDTO;
 import antoniogiovanni.marchese.CapstoneBackend.service.SolutionService;
+import com.itextpdf.text.DocumentException;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -78,7 +80,7 @@ public class SolutionController {
 
     @PreAuthorize("hasAnyAuthority('STUDENT')")
     @PutMapping("/acceptSolution/{solutionId}")
-    public ResponseDTO acceptSolution(@PathVariable Long solutionId,@AuthenticationPrincipal User currentUser){
+    public ResponseDTO acceptSolution(@PathVariable Long solutionId,@AuthenticationPrincipal User currentUser) throws IOException, MessagingException {
         return new ResponseDTO(solutionService.acceptSolution(solutionId,(Student) currentUser).getId());
     }
 }

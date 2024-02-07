@@ -43,6 +43,7 @@ public record UserRegisterDTO(
         @NotNull
         @NotEmpty
         @Size(min = 5,max = 5)
-        String postalCode
+        String postalCode,
+        String piva
         ) {
 }
