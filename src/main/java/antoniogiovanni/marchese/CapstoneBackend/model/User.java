@@ -1,6 +1,7 @@
 package antoniogiovanni.marchese.CapstoneBackend.model;
 
 import antoniogiovanni.marchese.CapstoneBackend.model.enums.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -32,7 +33,7 @@ public class User implements UserDetails {
 
     @Column(unique = true)
     private String email;
-
+    @JsonIgnore
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;

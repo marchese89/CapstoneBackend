@@ -33,4 +33,12 @@ public class SubjectService {
         subjectFromDB.getTeacherList().add(teacher);
         return subjectRepository.save(subjectFromDB);
     }
+    public Subject addSubject(Long subjectId,User currentUser){
+        Teacher teacher = (Teacher) userService.findById(currentUser.getId());
+        Subject subject = this.findById(subjectId);
+        teacher.getSubjectList().add(subject);
+        userService.save(teacher);
+        subject.getTeacherList().add(teacher);
+        return subjectRepository.save(subject);
+    }
 }

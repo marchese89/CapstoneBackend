@@ -2,6 +2,7 @@ package antoniogiovanni.marchese.CapstoneBackend.model;
 
 import antoniogiovanni.marchese.CapstoneBackend.model.enums.RequestState;
 import antoniogiovanni.marchese.CapstoneBackend.model.enums.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -29,6 +30,7 @@ public class Request {
     @JoinColumn(name = "student_id")
     private Student student;
     @OneToMany(mappedBy = "request")
+    @JsonIgnore
     private List<Solution> solutionList;
 
     @Enumerated(EnumType.STRING)

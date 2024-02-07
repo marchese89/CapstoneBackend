@@ -26,4 +26,5 @@ public class Solution {
     private String solutionUrl;
     @Enumerated(EnumType.STRING)
     private SolutionState state;
+    private Long price;
 }

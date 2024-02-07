@@ -32,4 +32,11 @@ public class SubjectController {
         }
         return  new ResponseDTO(subjectService.save(subjectDTO,currentUser).getId());
     }
+    @PostMapping("/add/{subjectId}")
+    @PreAuthorize("hasAnyAuthority('TEACHER')")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseDTO addSubject(@PathVariable Long subjectId,
+                                     @AuthenticationPrincipal User currentUser){
+        return  new ResponseDTO(subjectService.addSubject(subjectId,currentUser).getId());
+    }
 }

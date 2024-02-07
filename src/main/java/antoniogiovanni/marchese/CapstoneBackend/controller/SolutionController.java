@@ -1,15 +1,14 @@
 package antoniogiovanni.marchese.CapstoneBackend.controller;
 
 import antoniogiovanni.marchese.CapstoneBackend.exceptions.BadRequestException;
-import antoniogiovanni.marchese.CapstoneBackend.model.Request;
+import antoniogiovanni.marchese.CapstoneBackend.model.Solution;
 import antoniogiovanni.marchese.CapstoneBackend.model.Student;
+import antoniogiovanni.marchese.CapstoneBackend.model.Teacher;
 import antoniogiovanni.marchese.CapstoneBackend.model.User;
-import antoniogiovanni.marchese.CapstoneBackend.payloads.RequestDTO;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.ResponseDTO;
-import antoniogiovanni.marchese.CapstoneBackend.service.RequestService;
+import antoniogiovanni.marchese.CapstoneBackend.service.SolutionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,22 +23,21 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/requests")
-public class RequestController {
+@RequestMapping("/solutions")
+public class SolutionController {
 
     @Autowired
-    private RequestService requestService;
+    private SolutionService solutionService;
 
     @Value("${upload.dir}")
     private String uploadDir;
-
-    @PostMapping("/{subjectId}/{requestTitle}")
-    @PreAuthorize("hasAnyAuthority('STUDENT')")
+    @PreAuthorize("hasAnyAuthority('TEACHER')")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseDTO createRequest(
+    @PostMapping("/{requestId}/{price}")
+    public ResponseDTO addSolution(
             @RequestParam("file") MultipartFile file,
-            @PathVariable Long subjectId,
-            @PathVariable String requestTitle,
+            @PathVariable Long requestId,
+            @PathVariable Long price,
             @AuthenticationPrincipal User currentUser
     ) {
 
@@ -58,6 +56,7 @@ public class RequestController {
             n++;
             f = new File(uploadDir + File.separator + n + fileExtension);
         }
+
         try {
             byte[] bytes = file.getBytes();
             filePath = uploadDir + File.separator + n +fileExtension;
@@ -67,13 +66,19 @@ public class RequestController {
             e.printStackTrace();
             throw new BadRequestException("problems during upload");
         }
-        RequestDTO requestDTO = new RequestDTO(requestTitle,subjectId);
-        return new ResponseDTO(requestService.save(filePath,(Student) currentUser,requestDTO).getId());
+
+        return new ResponseDTO(solutionService.save(filePath,requestId,price,(Teacher) currentUser).getId());
     }
 
-    @GetMapping("/byTeacher")
-    @PreAuthorize("hasAnyAuthority('TEACHER')")
-    public List<Request> getRequestsByTeacher(@AuthenticationPrincipal User currentUser) {
-        return requestService.getRequestByTeacher(currentUser.getId());
+    @PreAuthorize("hasAnyAuthority('STUDENT')")
+    @GetMapping("/getByRequestId/{requestId}")
+    public List<Solution> getSolutionsByRequestId(@PathVariable Long requestId,@AuthenticationPrincipal User currentUser){
+        return solutionService.getSolutionsByRequestId(requestId,(Student)currentUser);
+    }
+
+    @PreAuthorize("hasAnyAuthority('STUDENT')")
+    @PutMapping("/acceptSolution/{solutionId}")
+    public ResponseDTO acceptSolution(@PathVariable Long solutionId,@AuthenticationPrincipal User currentUser){
+        return new ResponseDTO(solutionService.acceptSolution(solutionId,(Student) currentUser).getId());
     }
 }
