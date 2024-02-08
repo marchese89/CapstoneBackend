@@ -52,16 +52,16 @@ public class SolutionController {
 
         String filePath;
         long n = 1;
-        File f = new File(uploadDir + File.separator + n + fileExtension);
+        File f = new File(uploadDir + File.separator + "solutions"+ File.separator + n + fileExtension);
 
         while(f.exists()){
             n++;
-            f = new File(uploadDir + File.separator + n + fileExtension);
+            f = new File(uploadDir + File.separator + "solutions"+ File.separator + n + fileExtension);
         }
 
         try {
             byte[] bytes = file.getBytes();
-            filePath = uploadDir + File.separator + n +fileExtension;
+            filePath = uploadDir + File.separator + "solutions"+ File.separator + n + fileExtension;
             Files.write(Path.of(filePath), bytes);
 
         } catch (IOException e) {

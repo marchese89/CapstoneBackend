@@ -62,11 +62,16 @@ public class RequestSolutionTest {
         RequestSolutionTest.emailTeacher = email;
     }
 
+    @Value("${email.teacher2}")
+    public void setEmailTeacher2(String email){
+        RequestSolutionTest.emailTeacher2 = email;
+    }
+
     @BeforeAll
     public static void setUpEmail() {
 //        email = faker.name().username()+"@"+faker.internet().domainName();
 //        emailTeacher = faker.name().username()+"@"+faker.internet().domainName();
-        emailTeacher2 = faker.name().username()+"@"+faker.internet().domainName();
+//        emailTeacher2 = faker.name().username()+"@"+faker.internet().domainName();
     }
 
     @BeforeAll
