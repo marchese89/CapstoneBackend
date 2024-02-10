@@ -1,4 +1,6 @@
 package antoniogiovanni.marchese.CapstoneBackend.payloads;
 
-public record UserLoginResponseDTO(String token) {
+import antoniogiovanni.marchese.CapstoneBackend.model.enums.Role;
+
+public record UserLoginResponseDTO(String token, Role role) {
 }

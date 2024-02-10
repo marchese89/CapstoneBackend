@@ -27,8 +27,8 @@ public class AuthController {
         if (validation.hasErrors()) {
             throw new BadRequestException(validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
         }
-        String accessToken = authService.authenticateUser(body);
-        return new UserLoginResponseDTO(accessToken);
+        AuthenticateUserDTO authenticateUserDTO = authService.authenticateUser(body);
+        return new UserLoginResponseDTO(authenticateUserDTO.accessToken(),authenticateUserDTO.user().getRole());
     }
 
     @PostMapping("/register")

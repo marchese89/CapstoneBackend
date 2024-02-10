@@ -1,5 +1,6 @@
 package antoniogiovanni.marchese.CapstoneBackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,5 +23,6 @@ public class Invoice {
 
     private LocalDate issuingDate;
     @OneToOne
+    @JsonIgnore
     private Request request;
 }

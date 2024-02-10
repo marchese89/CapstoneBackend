@@ -1,9 +1,8 @@
 package antoniogiovanni.marchese.CapstoneBackend.service;
 
 import antoniogiovanni.marchese.CapstoneBackend.exceptions.NotFoundException;
-import antoniogiovanni.marchese.CapstoneBackend.model.Request;
-import antoniogiovanni.marchese.CapstoneBackend.model.Student;
-import antoniogiovanni.marchese.CapstoneBackend.model.Subject;
+import antoniogiovanni.marchese.CapstoneBackend.exceptions.UnauthorizedException;
+import antoniogiovanni.marchese.CapstoneBackend.model.*;
 import antoniogiovanni.marchese.CapstoneBackend.model.enums.RequestState;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.RequestDTO;
 import antoniogiovanni.marchese.CapstoneBackend.repository.RequestRepository;
@@ -50,5 +49,31 @@ public class RequestService {
     }
     public List<Request>getRequestByTeacher(Long idTeacher){
         return requestRepository.getRequestByTeacher(idTeacher);
+    }
+
+    public List<Request> getRequestByStudent(Long idStudent){
+        return requestRepository.getRequestByStudent(idStudent);
+    }
+
+    public Request getByIdForStudents(Long idRequest, User currentUser){
+        Request request = this.findById(idRequest);
+        if(request.getStudent().getId() != currentUser.getId()){
+            throw new UnauthorizedException("cannot read requests of other students");
+        }
+        return request;
+    }
+    public Request getByIdForTeachers(Long idRequest, User currentUser){
+        Request request = this.findById(idRequest);
+        boolean ok = false;
+        List<Teacher> teacherList = request.getSubject().getTeacherList();
+        for(Teacher teacher: teacherList){
+            if(teacher.getId() == currentUser.getId()){
+                ok = true;
+            }
+        }
+        if(!ok){
+            throw new UnauthorizedException("cannot read requests of other teachers");
+        }
+        return request;
     }
 }

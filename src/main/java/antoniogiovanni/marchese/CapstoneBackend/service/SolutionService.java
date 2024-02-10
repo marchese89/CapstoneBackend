@@ -12,7 +12,6 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -56,6 +55,19 @@ public class SolutionService {
     @Value("${upload.dir}")
     private String uploadDir;
 
+    public boolean canSaveSolution(Long requestId, Teacher teacher){
+        Request request = requestService.findById(requestId);
+        List<Solution> solutionList = request.getSolutionList();
+        boolean ok = true;
+        for(Solution solution: solutionList){
+            if(solution.getTeacher().getId() == teacher.getId()){
+                ok = false;
+                break;
+            }
+        }
+        return ok;
+    }
+
     public Solution save(String filePath,Long requestId,Long price, Teacher teacher){
         Solution solution = new Solution();
         solution.setSolutionUrl(filePath);
@@ -76,6 +88,7 @@ public class SolutionService {
         solution.setState(SolutionState.PENDING);
         solution.setTeacher((Teacher) userService.findById(teacher.getId()));
         solution.setPrice(price);
+        emailService.sendEmail(request.getStudent().getEmail(),"Nuova Soluzione per la tua richiesta","Salve,\nun insegnante ha inserito una soluzione per la tua richista "+ request.getTitle() +"\n\ncontrolla il tuo profilo.");
         return solutionRepository.save(solution);
     }
 
@@ -85,6 +98,24 @@ public class SolutionService {
             throw new UnauthorizedException("you can read only solutions of your requests");
         }
         return solutionRepository.getSolutionsByRequestId(requestId);
+    }
+
+    public Solution getSolutionByRequestIdAndTeacher(Long requestId,Teacher teacher){
+        //return solution only if exists for this teacher
+        Request request = requestService.findById(requestId);
+        List<Solution> solutionList = request.getSolutionList();
+        Solution s = null;
+        boolean ok = false;
+        for(Solution solution: solutionList){
+            if(solution.getTeacher().getId() == teacher.getId()){
+                ok = true;
+                s = solution;
+            }
+        }
+        if(!ok){
+            throw new UnauthorizedException("you don't have solutions");
+        }
+        return s;
     }
 
     public Solution findById(Long id){

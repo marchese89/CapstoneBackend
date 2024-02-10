@@ -2,6 +2,7 @@ package antoniogiovanni.marchese.CapstoneBackend.service;
 
 import antoniogiovanni.marchese.CapstoneBackend.exceptions.UnauthorizedException;
 import antoniogiovanni.marchese.CapstoneBackend.model.User;
+import antoniogiovanni.marchese.CapstoneBackend.payloads.AuthenticateUserDTO;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.UserLoginDTO;
 import antoniogiovanni.marchese.CapstoneBackend.security.JWTTools;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,10 @@ public class AuthService {
     @Autowired
     private PasswordEncoder bcrypt;
 
-    public String authenticateUser(UserLoginDTO userLoginDTO) {
+    public AuthenticateUserDTO authenticateUser(UserLoginDTO userLoginDTO) {
         User user = userService.findByEmail(userLoginDTO.email());
         if (bcrypt.matches(userLoginDTO.password(),user.getPassword())) {
-            return jwtTools.createToken(user);
+            return new AuthenticateUserDTO(jwtTools.createToken(user),user);
         } else {
             throw new UnauthorizedException("Invalid credentials!");
         }

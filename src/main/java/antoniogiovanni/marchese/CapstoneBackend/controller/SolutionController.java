@@ -1,6 +1,7 @@
 package antoniogiovanni.marchese.CapstoneBackend.controller;
 
 import antoniogiovanni.marchese.CapstoneBackend.exceptions.BadRequestException;
+import antoniogiovanni.marchese.CapstoneBackend.exceptions.UnauthorizedException;
 import antoniogiovanni.marchese.CapstoneBackend.model.Solution;
 import antoniogiovanni.marchese.CapstoneBackend.model.Student;
 import antoniogiovanni.marchese.CapstoneBackend.model.Teacher;
@@ -46,6 +47,9 @@ public class SolutionController {
         if (file.isEmpty()) {
             throw new BadRequestException("file cannot be empty");
         }
+        if(!solutionService.canSaveSolution(requestId,(Teacher) currentUser)){
+            throw new UnauthorizedException("you cannot send more than one solution per request");
+        }
         String originalFileName = file.getOriginalFilename();
 
         String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
@@ -76,6 +80,12 @@ public class SolutionController {
     @GetMapping("/getByRequestId/{requestId}")
     public List<Solution> getSolutionsByRequestId(@PathVariable Long requestId,@AuthenticationPrincipal User currentUser){
         return solutionService.getSolutionsByRequestId(requestId,(Student)currentUser);
+    }
+
+    @PreAuthorize("hasAnyAuthority('TEACHER')")
+    @GetMapping("/getByRequestIdAndTeacher/{requestId}")
+    public Solution getSolutionsByRequestIdAndTeacher(@PathVariable Long requestId,@AuthenticationPrincipal User currentUser){
+        return solutionService.getSolutionByRequestIdAndTeacher(requestId,(Teacher)currentUser);
     }
 
     @PreAuthorize("hasAnyAuthority('STUDENT')")

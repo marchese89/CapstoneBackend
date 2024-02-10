@@ -1,6 +1,7 @@
 package antoniogiovanni.marchese.CapstoneBackend.service;
 
 import antoniogiovanni.marchese.CapstoneBackend.exceptions.NotFoundException;
+import antoniogiovanni.marchese.CapstoneBackend.exceptions.UnauthorizedException;
 import antoniogiovanni.marchese.CapstoneBackend.model.Subject;
 import antoniogiovanni.marchese.CapstoneBackend.model.Teacher;
 import antoniogiovanni.marchese.CapstoneBackend.model.User;
@@ -8,6 +9,8 @@ import antoniogiovanni.marchese.CapstoneBackend.payloads.SubjectDTO;
 import antoniogiovanni.marchese.CapstoneBackend.repository.SubjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class SubjectService {
@@ -40,5 +43,48 @@ public class SubjectService {
         userService.save(teacher);
         subject.getTeacherList().add(teacher);
         return subjectRepository.save(subject);
+    }
+
+    public List<Subject> getSubjectsByTeacher(Long idTeacher){
+        return subjectRepository.findByTeacher(idTeacher);
+    }
+
+    public List<Subject> getSubjectsByNoTeacher(Long idTeacher){
+        return subjectRepository.findByNoTeacher(idTeacher);
+    }
+
+    public Subject update(Long subjectId,SubjectDTO subjectDTO,User currentUser){
+        List<Subject> subjectList = getSubjectsByTeacher(currentUser.getId());
+        boolean ok = false;
+        for(Subject subject: subjectList){
+            if(subject.getId() == subjectId){
+                ok = true;
+            }
+        }
+        if(!ok){
+            throw new UnauthorizedException("cannot modify others subjects");
+        }
+        Subject subjectFromDB = this.findById(subjectId);
+        subjectFromDB.setName(subjectDTO.name());
+        return subjectRepository.save(subjectFromDB);
+    }
+
+    public void findByIdAndDelete(Long subjectId,User currentUser){
+        List<Subject> subjectList = getSubjectsByTeacher(currentUser.getId());
+        boolean ok = false;
+        for(Subject subject: subjectList){
+            if(subject.getId() == subjectId){
+                ok = true;
+            }
+        }
+        if(!ok){
+            throw new UnauthorizedException("cannot modify others subjects");
+        }
+        Subject subject = this.findById(subjectId);
+        subjectRepository.delete(subject);
+    }
+
+    public List<Subject> findAll(){
+        return subjectRepository.findAll();
     }
 }
