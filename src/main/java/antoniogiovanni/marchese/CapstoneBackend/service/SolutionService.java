@@ -88,7 +88,11 @@ public class SolutionService {
         solution.setState(SolutionState.PENDING);
         solution.setTeacher((Teacher) userService.findById(teacher.getId()));
         solution.setPrice(price);
-        emailService.sendEmail(request.getStudent().getEmail(),"Nuova Soluzione per la tua richiesta","Salve,\nun insegnante ha inserito una soluzione per la tua richista "+ request.getTitle() +"\n\ncontrolla il tuo profilo.");
+        emailService.sendEmail(
+                request.getStudent().getEmail(),
+                "Nuova Soluzione per la tua richiesta",
+                "Salve,\nun insegnante ha inserito una soluzione per la tua richista "+
+                        request.getTitle() +"\n\ncontrolla il tuo profilo.");
         return solutionRepository.save(solution);
     }
 
