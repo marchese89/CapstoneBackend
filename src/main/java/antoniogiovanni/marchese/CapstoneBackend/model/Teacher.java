@@ -29,4 +29,12 @@ public class Teacher extends User{
     private List<Subject> subjectList = new ArrayList<>();
     private String cf;
     private String piva;
+    private Double feedback;
+
+    public Double getFeedback() {
+        if(feedback != null)
+            return feedback;
+        else
+            return 0.0;
+    }
 }

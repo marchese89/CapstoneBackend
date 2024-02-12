@@ -99,6 +99,6 @@ public class RequestService {
                 }
             }
         }
-        return Double.parseDouble(df.format(total/number).replace(",","."));
+        return Double.parseDouble(number > 0 ? df.format(total/number).replace(",","."):"0.0");
     }
 }

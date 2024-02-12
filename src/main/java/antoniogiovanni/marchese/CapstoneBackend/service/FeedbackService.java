@@ -8,6 +8,7 @@ import antoniogiovanni.marchese.CapstoneBackend.repository.FeedbackRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 @Service
@@ -17,6 +18,9 @@ public class FeedbackService {
 
     @Autowired
     private RequestService requestService;
+
+    @Autowired
+    private UserService userService;
 
     public Feedback save(Student student, Long requestId,Integer score){
 
@@ -49,7 +53,13 @@ public class FeedbackService {
             feedback.setTeacher(solution.getTeacher());
         }
         feedback.setScore(score);
+        Feedback f = feedbackRepository.save(feedback);
+        Teacher teacherFromDB = (Teacher) userService.findById(feedback.getTeacher().getId());
+        teacherFromDB.setFeedback(requestService.getTeacherFeedback(feedback.getTeacher().getId()));
+        userService.save(teacherFromDB);
+        return f;
 
-        return feedbackRepository.save(feedback);
     }
+
+
 }

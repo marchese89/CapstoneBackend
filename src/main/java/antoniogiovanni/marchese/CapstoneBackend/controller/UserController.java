@@ -49,10 +49,4 @@ public class UserController {
         return userService.findById(id);
     }
 
-    @GetMapping("/feedback/{idTeacher}")
-    @PreAuthorize("hasAnyAuthority('STUDENT','TEACHER')")
-    public FeedbackResponseDTO getTeacherFeedback(@PathVariable Long idTeacher){
-        return new FeedbackResponseDTO(requestService.getTeacherFeedback(idTeacher));
-    }
-
 }
