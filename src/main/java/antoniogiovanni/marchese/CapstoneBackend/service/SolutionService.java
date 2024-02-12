@@ -55,6 +55,10 @@ public class SolutionService {
     @Value("${upload.dir}")
     private String uploadDir;
 
+    public RequestService getRequestService(){
+        return this.requestService;
+    }
+
     public boolean canSaveSolution(Long requestId, Teacher teacher){
         Request request = requestService.findById(requestId);
         List<Solution> solutionList = request.getSolutionList();

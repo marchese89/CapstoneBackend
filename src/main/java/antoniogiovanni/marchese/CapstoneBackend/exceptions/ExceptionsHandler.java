@@ -1,6 +1,7 @@
 package antoniogiovanni.marchese.CapstoneBackend.exceptions;
 
 import antoniogiovanni.marchese.CapstoneBackend.payloads.ErrorDTO;
+import com.stripe.exception.StripeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,6 +32,12 @@ public class ExceptionsHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorDTO handleUnauthorized(UnauthorizedException ex){
         return new ErrorDTO(ex.getMessage(), LocalDateTime.now());
+    }
+
+    @ExceptionHandler(StripeException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorDTO handleStripeException(StripeException ex){
+        return new ErrorDTO("stripe error",LocalDateTime.now());
     }
 
     @ExceptionHandler(Exception.class)

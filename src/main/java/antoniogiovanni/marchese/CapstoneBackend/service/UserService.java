@@ -3,11 +3,10 @@ package antoniogiovanni.marchese.CapstoneBackend.service;
 import antoniogiovanni.marchese.CapstoneBackend.exceptions.BadRequestException;
 import antoniogiovanni.marchese.CapstoneBackend.exceptions.NotFoundException;
 import antoniogiovanni.marchese.CapstoneBackend.exceptions.UnauthorizedException;
-import antoniogiovanni.marchese.CapstoneBackend.model.Address;
-import antoniogiovanni.marchese.CapstoneBackend.model.Student;
-import antoniogiovanni.marchese.CapstoneBackend.model.Teacher;
-import antoniogiovanni.marchese.CapstoneBackend.model.User;
+import antoniogiovanni.marchese.CapstoneBackend.model.*;
+import antoniogiovanni.marchese.CapstoneBackend.model.enums.RequestState;
 import antoniogiovanni.marchese.CapstoneBackend.model.enums.Role;
+import antoniogiovanni.marchese.CapstoneBackend.model.enums.SolutionState;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.PasswordDTO;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.UserModifyDTO;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.UserRegisterDTO;
@@ -21,13 +20,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.text.DecimalFormat;
+import java.util.List;
+
 @Service
 public class UserService {
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    AddressService addressService;
+    private AddressService addressService;
 
     private PasswordEncoder bcrypt =  new BCryptPasswordEncoder(11);
     public Page<User> getUsers(int page, int size, String orderBy){

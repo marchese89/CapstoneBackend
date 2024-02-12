@@ -1,9 +1,15 @@
 package antoniogiovanni.marchese.CapstoneBackend.model;
 
+import antoniogiovanni.marchese.CapstoneBackend.model.enums.RequestState;
+import antoniogiovanni.marchese.CapstoneBackend.model.enums.SolutionState;
+import antoniogiovanni.marchese.CapstoneBackend.service.RequestService;
+import antoniogiovanni.marchese.CapstoneBackend.service.SolutionService;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +18,7 @@ import java.util.List;
 @Setter
 public class Teacher extends User{
 
-    private String certificateUrl;
+//    private String certificateUrl;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

@@ -1,5 +1,6 @@
 package antoniogiovanni.marchese.CapstoneBackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,10 +19,16 @@ public class Feedback {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "student_id")
+    @JsonIgnore
     private Student student;
     @ManyToOne
     @JoinColumn(name = "teacher_id")
+    @JsonIgnore
     private Teacher teacher;
 
     private int score;
+    @OneToOne
+    @JoinColumn(name = "request_id")
+    @JsonIgnore
+    private Request request;
 }

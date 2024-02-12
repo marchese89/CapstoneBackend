@@ -37,4 +37,6 @@ public class Request {
     private RequestState requestState;
     @OneToOne(mappedBy = "request")
     private Invoice invoice;
+    @OneToOne(mappedBy = "request")
+    private Feedback feedback;
 }

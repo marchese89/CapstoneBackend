@@ -3,9 +3,11 @@ package antoniogiovanni.marchese.CapstoneBackend.controller;
 import antoniogiovanni.marchese.CapstoneBackend.exceptions.BadRequestException;
 import antoniogiovanni.marchese.CapstoneBackend.model.Student;
 import antoniogiovanni.marchese.CapstoneBackend.model.User;
+import antoniogiovanni.marchese.CapstoneBackend.payloads.FeedbackResponseDTO;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.PasswordDTO;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.ResponseDTO;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.UserModifyDTO;
+import antoniogiovanni.marchese.CapstoneBackend.service.RequestService;
 import antoniogiovanni.marchese.CapstoneBackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -20,7 +22,10 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
+
+    @Autowired
+    private RequestService requestService;
 
     @PutMapping
     @PreAuthorize("hasAnyAuthority('STUDENT','TEACHER')")
@@ -44,6 +49,10 @@ public class UserController {
         return userService.findById(id);
     }
 
-
+    @GetMapping("/feedback/{idTeacher}")
+    @PreAuthorize("hasAnyAuthority('STUDENT','TEACHER')")
+    public FeedbackResponseDTO getTeacherFeedback(@PathVariable Long idTeacher){
+        return new FeedbackResponseDTO(requestService.getTeacherFeedback(idTeacher));
+    }
 
 }
