@@ -103,13 +103,45 @@ public class UserService {
         userRepository.delete(found);
     }
 
-    public Student update( UserModifyDTO userModifyDTO, User user){
-        Student found = (Student) this.findById(user.getId());
-        found.setName(userModifyDTO.name());
-        found.setSurname(userModifyDTO.surname());
-        found.setEmail(userModifyDTO.email());
-        found.setCf(userModifyDTO.cf());
-        return userRepository.save(found);
+    public User update(UserModifyDTO userModifyDTO, User user){
+
+        Student studentFound = null;
+        Teacher teacherFound = null;
+        if(this.findById(user.getId()).getRole() == Role.STUDENT){
+            studentFound = (Student) this.findById(user.getId());
+            studentFound.setName(userModifyDTO.name());
+            studentFound.setSurname(userModifyDTO.surname());
+            studentFound.setEmail(userModifyDTO.email());
+            studentFound.setCf(userModifyDTO.cf());
+            Address address = studentFound.getAddress();
+            address.setCity(userModifyDTO.city());
+            address.setStreet(userModifyDTO.street());
+            address.setProvince(userModifyDTO.province());
+            address.setHouseNumber(userModifyDTO.houseNumber());
+            address.setPostalCode(userModifyDTO.postalCode());
+            addressService.save(address);
+        }else{
+            teacherFound = (Teacher) this.findById(user.getId());
+            teacherFound.setName(userModifyDTO.name());
+            teacherFound.setSurname(userModifyDTO.surname());
+            teacherFound.setEmail(userModifyDTO.email());
+            teacherFound.setCf(userModifyDTO.cf());
+            teacherFound.setPiva(userModifyDTO.piva());
+            Address address = teacherFound.getAddress();
+            address.setCity(userModifyDTO.city());
+            address.setStreet(userModifyDTO.street());
+            address.setProvince(userModifyDTO.province());
+            address.setHouseNumber(userModifyDTO.houseNumber());
+            address.setPostalCode(userModifyDTO.postalCode());
+            addressService.save(address);
+        }
+
+        if(studentFound != null){
+            return userRepository.save(studentFound);
+        }else{
+            return userRepository.save(teacherFound);
+        }
+
 
     }
 

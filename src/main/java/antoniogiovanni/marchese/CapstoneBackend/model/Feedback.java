@@ -26,7 +26,7 @@ public class Feedback {
     @JsonIgnore
     private Teacher teacher;
 
-    private int score;
+    private Integer score;
     @OneToOne
     @JoinColumn(name = "request_id")
     @JsonIgnore

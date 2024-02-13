@@ -93,8 +93,10 @@ public class RequestService {
                 List<Solution> solutionList = request.getSolutionList();
                 for (Solution solution: solutionList){
                     if(solution.getState() == SolutionState.ACCEPTED && solution.getTeacher().getId() == idTeacher){
-                        total+=request.getFeedback().getScore();
-                        number++;
+                        if(request.getFeedback() != null) {
+                            total += request.getFeedback().getScore();
+                            number++;
+                        }
                     }
                 }
             }

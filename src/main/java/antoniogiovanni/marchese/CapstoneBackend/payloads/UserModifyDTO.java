@@ -6,15 +6,34 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record UserModifyDTO(@NotNull
-                               @NotEmpty
-                               String name,
+                            @NotEmpty
+                            String name,
                             @NotNull
-                               @NotEmpty
-                               String surname,
+                            @NotEmpty
+                            String surname,
                             @Email
-                               String email,
+                            String email,
                             @NotNull
-                               @NotEmpty
-                               @Size(min = 16,max = 16)
-                               String cf) {
+                            @NotEmpty
+                            @Size(min = 16,max = 16)
+                            String cf,
+                            @NotNull
+                            @NotEmpty
+                            String street,
+                            @NotNull
+                            @NotEmpty
+                            String houseNumber,
+                            @NotNull
+                            @NotEmpty
+                            String city,
+                            @NotNull
+                            @NotEmpty
+                            @Size(min = 2,max = 2)
+                            String province,
+                            @NotNull
+                            @NotEmpty
+                            @Size(min = 5,max = 5)
+                            String postalCode,
+                            String piva
+    ) {
 }

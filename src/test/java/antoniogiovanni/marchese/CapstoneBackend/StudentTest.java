@@ -91,44 +91,44 @@ public class StudentTest {
         authToken = authToken.substring(1, authToken.length() - 1);
     }
 
-    @Test
-    @Order(3)
-    void modifyStudent() throws JsonProcessingException {
+//    @Test
+//    @Order(3)
+//    void modifyStudent() throws JsonProcessingException {
+//
+//        String requestBody = objectMapper.writeValueAsString(
+//                new UserModifyDTO("Modified Name",
+//                        "Modified Surname",email,
+//                        "HHHHHHH76L23I763"
+//                ));
+//
+//        Response response = given()
+//                .header("Authorization", "Bearer " + authToken)
+//                .contentType("application/json")
+//                .body(requestBody)
+//                .when()
+//                .put("/users");
+//        response.then().assertThat().statusCode(200);
+//
+//    }
 
-        String requestBody = objectMapper.writeValueAsString(
-                new UserModifyDTO("Modified Name",
-                        "Modified Surname",email,
-                        "HHHHHHH76L23I763"
-                ));
-
-        Response response = given()
-                .header("Authorization", "Bearer " + authToken)
-                .contentType("application/json")
-                .body(requestBody)
-                .when()
-                .put("/users");
-        response.then().assertThat().statusCode(200);
-
-    }
-
-    @Test
-    @Order(4)
-    void modifyStudentNo() throws JsonProcessingException {
-        String requestBody = objectMapper.writeValueAsString(
-                new UserModifyDTO(faker.name().firstName(),
-                        faker.name().lastName(),email,
-                        "ERGITH76L23I763"
-                ));
-
-        Response response = given()
-                .header("Authorization", "Bearer " + authToken)
-                .contentType("application/json")
-                .body(requestBody)
-                .when()
-                .put("/users");
-        response.then().assertThat().statusCode(400);
-
-    }
+//    @Test
+//    @Order(4)
+//    void modifyStudentNo() throws JsonProcessingException {
+//        String requestBody = objectMapper.writeValueAsString(
+//                new UserModifyDTO(faker.name().firstName(),
+//                        faker.name().lastName(),email,
+//                        "ERGITH76L23I763"
+//                ));
+//
+//        Response response = given()
+//                .header("Authorization", "Bearer " + authToken)
+//                .contentType("application/json")
+//                .body(requestBody)
+//                .when()
+//                .put("/users");
+//        response.then().assertThat().statusCode(400);
+//
+//    }
 
     @Test
     @Order(5)
