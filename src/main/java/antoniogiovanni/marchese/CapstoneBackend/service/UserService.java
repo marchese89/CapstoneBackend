@@ -147,7 +147,11 @@ public class UserService {
 
     public User updatePassword(PasswordDTO passwordDTO, User user){
         User user1 = this.findById(user.getId());
-        user1.setPassword(bcrypt.encode(passwordDTO.password()));
+        if(bcrypt.matches(passwordDTO.oldPassword(),user1.getPassword())) {
+            user1.setPassword(bcrypt.encode(passwordDTO.newPassword()));
+        }else{
+            throw new BadRequestException("incorrect old password");
+        }
         return userRepository.save(user1);
     }
 

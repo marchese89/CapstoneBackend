@@ -4,5 +4,8 @@ import antoniogiovanni.marchese.CapstoneBackend.utility.ValidPassword;
 
 public record PasswordDTO(
         @ValidPassword
-        String password) {
+        String oldPassword,
+        @ValidPassword
+        String newPassword
+) {
 }

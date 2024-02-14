@@ -107,7 +107,7 @@ public class TeacherTest {
     @Order(4)
     void modifyPassword() throws JsonProcessingException {
         String requestBody = objectMapper.writeValueAsString(
-                new PasswordDTO("HH42@Ys99iS.N987"));
+                new PasswordDTO(password,"HH42@Ys99iS.N987"));
 
         Response response = given()
                 .header("Authorization", "Bearer " + authToken)
