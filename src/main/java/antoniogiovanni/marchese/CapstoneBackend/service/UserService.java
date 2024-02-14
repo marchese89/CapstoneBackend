@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class UserService {
@@ -30,6 +31,9 @@ public class UserService {
 
     @Autowired
     private AddressService addressService;
+
+    @Autowired
+    private EmailService emailService;
 
     private PasswordEncoder bcrypt =  new BCryptPasswordEncoder(11);
     public Page<User> getUsers(int page, int size, String orderBy){
@@ -159,5 +163,28 @@ public class UserService {
         return userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("user with email " + email + " not found!"));
     }
 
+    public void recoverPassword(String email){
+        User user = this.findByEmail(email);
+        String numbers = "0123456789";
+        String capitalLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String normalLetters = "abcdefghijklmnopqrstuvwxyz";
+        String specialCharacters = ".:;?!@#,><[]{}";
+        String[] strings = {numbers,capitalLetters,normalLetters,specialCharacters};
+        StringBuilder stringBuilder = new StringBuilder();
+        Random random = new Random();
+
+        for(int i = 0; i < 10; i++){
+            String s = strings[i%4];
+            stringBuilder.append(s.charAt(random.nextInt(s.length())));
+        }
+        String newPassword = stringBuilder.toString();
+        user.setPassword(bcrypt.encode(newPassword));
+
+        userRepository.save(user);
+
+        emailService.sendEmail(email,"Recupero Password",
+                "Salve,\nla tua nuova password è: "+newPassword+"\n\nCambiala dopo il primo accesso\n");
+
+    }
 
 }

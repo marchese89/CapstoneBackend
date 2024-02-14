@@ -2,6 +2,7 @@ package antoniogiovanni.marchese.CapstoneBackend.exceptions;
 
 import antoniogiovanni.marchese.CapstoneBackend.payloads.ErrorDTO;
 import com.stripe.exception.StripeException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,7 +27,7 @@ public class ExceptionsHandler {
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN) // 403
     public ErrorDTO handleAccessDenied(AccessDeniedException ex) {
-        return new ErrorDTO("Il tuo ruolo non permette di accedere a questa funzionalità!", LocalDateTime.now());
+        return new ErrorDTO("Your role not allow you this action", LocalDateTime.now());
     }
     @ExceptionHandler(UnauthorizedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
@@ -40,11 +41,17 @@ public class ExceptionsHandler {
         return new ErrorDTO("stripe error",LocalDateTime.now());
     }
 
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorDTO handleDataIntegrityViolation(DataIntegrityViolationException ex){
+        return new ErrorDTO("data constraint violation",LocalDateTime.now());
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // Dovrà rispondere con un 500
     public ErrorDTO handleGenericError(Exception ex) {
         ex.printStackTrace();
-        return new ErrorDTO("Problema lato server", LocalDateTime.now());
+        return new ErrorDTO("server's problems", LocalDateTime.now());
     }
 
 }

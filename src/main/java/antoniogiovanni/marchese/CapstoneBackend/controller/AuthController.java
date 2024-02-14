@@ -40,4 +40,13 @@ public class AuthController {
         User newUser = userService.save(userRegisterDTO);
         return new ResponseDTO(newUser.getId());
     }
+
+    @PostMapping("/recoverPass")
+    @ResponseStatus(HttpStatus.OK)
+    public void passwordRecover(@RequestBody @Validated PasswordRecoverDTO passwordRecoverDTO, BindingResult validation) {
+        if (validation.hasErrors()) {
+            throw new BadRequestException(validation.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList().toString());
+        }
+        userService.recoverPassword(passwordRecoverDTO.email());
+    }
 }
