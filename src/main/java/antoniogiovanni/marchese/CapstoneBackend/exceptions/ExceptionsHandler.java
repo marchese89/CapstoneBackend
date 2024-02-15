@@ -14,13 +14,13 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class ExceptionsHandler {
     @ExceptionHandler(BadRequestException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST) // Dovrà rispondere con un 400
+    @ResponseStatus(HttpStatus.BAD_REQUEST) //400
     public ErrorDTO handleBadRequest(BadRequestException ex) {
         return new ErrorDTO(ex.getMessage(), LocalDateTime.now());
     }
 
     @ExceptionHandler(NotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND) // Dovrà rispondere con un 404
+    @ResponseStatus(HttpStatus.NOT_FOUND) //404
     public ErrorDTO handleNotFound(NotFoundException ex) {
         return new ErrorDTO(ex.getMessage(), LocalDateTime.now());
     }
@@ -48,7 +48,7 @@ public class ExceptionsHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // Dovrà rispondere con un 500
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) //500
     public ErrorDTO handleGenericError(Exception ex) {
         ex.printStackTrace();
         return new ErrorDTO("server's problems", LocalDateTime.now());

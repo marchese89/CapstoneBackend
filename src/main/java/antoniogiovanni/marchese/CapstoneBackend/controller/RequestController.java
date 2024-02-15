@@ -73,13 +73,22 @@ public class RequestController {
 
     @GetMapping("/byTeacher")
     @PreAuthorize("hasAnyAuthority('TEACHER')")
-    public List<Request> getRequestsByTeacher(@AuthenticationPrincipal User currentUser) {
-        return requestService.getRequestByTeacher(currentUser.getId());
+    public Page<Request> getRequestsByTeacher(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String orderBy,
+            @RequestParam(defaultValue = "desc") String direction,
+            @AuthenticationPrincipal User currentUser) {
+        return requestService.getRequestByTeacher(currentUser.getId(),page,size,orderBy,direction);
     }
     @GetMapping("/byStudent")
     @PreAuthorize("hasAnyAuthority('STUDENT')")
-    public List<Request> getRequestsByStudent(@AuthenticationPrincipal User currentUser) {
-        return requestService.getRequestByStudent(currentUser.getId());
+    public Page<Request> getRequestsByStudent(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size,
+                                              @RequestParam(defaultValue = "id") String orderBy,
+                                              @RequestParam(defaultValue = "desc") String direction,
+                                              @AuthenticationPrincipal User currentUser) {
+        return requestService.getRequestByStudent(currentUser.getId(),page,size,orderBy,direction);
     }
     @GetMapping("/student/{requestId}")
     @PreAuthorize("hasAnyAuthority('STUDENT')")

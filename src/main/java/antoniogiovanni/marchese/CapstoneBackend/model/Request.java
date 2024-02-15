@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,4 +40,5 @@ public class Request {
     private Invoice invoice;
     @OneToOne(mappedBy = "request")
     private Feedback feedback;
+    private LocalDateTime date;
 }

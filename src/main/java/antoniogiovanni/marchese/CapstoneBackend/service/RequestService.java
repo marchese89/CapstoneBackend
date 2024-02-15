@@ -8,9 +8,14 @@ import antoniogiovanni.marchese.CapstoneBackend.model.enums.SolutionState;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.RequestDTO;
 import antoniogiovanni.marchese.CapstoneBackend.repository.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -45,6 +50,7 @@ public class RequestService {
         request.setSubject(subject);
         request.setRequestState(RequestState.OPEN);
         request.setStudent((Student) userService.findById(student.getId()));
+        request.setDate(LocalDateTime.now());
         //send email to teachers
         subject.getTeacherList().stream().forEach(
                 teacher -> emailService.sendEmail(
@@ -53,12 +59,36 @@ public class RequestService {
                         "Salve,\nhai ricevuto una nuova richiesta\n\ncontrolla il tuo profilo."));
         return requestRepository.save(request);
     }
-    public List<Request>getRequestByTeacher(Long idTeacher){
+
+    public Page<Request> getRequestByTeacher(Long idTeacher,int page, int size, String orderBy,String direction){
+        Sort.Direction sortDirection = Sort.Direction.DESC; // Default: decrescente
+
+        if (direction != null && direction.equalsIgnoreCase("asc")) {
+            sortDirection = Sort.Direction.ASC;
+        }
+        Sort sort = Sort.by(sortDirection, orderBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return requestRepository.getRequestByTeacher(idTeacher,pageable);
+    }
+
+    public List<Request> getRequestByTeacher(Long idTeacher){
         return requestRepository.getRequestByTeacher(idTeacher);
     }
 
-    public List<Request> getRequestByStudent(Long idStudent){
-        return requestRepository.getRequestByStudent(idStudent);
+//    public List<Request> getRequestByStudent(Long idStudent){
+//        return requestRepository.getRequestByStudent(idStudent);
+//    }
+
+    public Page<Request> getRequestByStudent(Long idStudent,int page, int size, String orderBy,String direction){
+        Sort.Direction sortDirection = Sort.Direction.DESC; // Default: decrescente
+
+        if (direction != null && direction.equalsIgnoreCase("asc")) {
+            sortDirection = Sort.Direction.ASC;
+        }
+        Sort sort = Sort.by(sortDirection, orderBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return requestRepository.getRequestByStudent(idStudent,pageable);
     }
 
     public Request getByIdForStudents(Long idRequest, User currentUser){
