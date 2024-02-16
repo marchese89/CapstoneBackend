@@ -41,4 +41,5 @@ public class Request {
     @OneToOne(mappedBy = "request")
     private Feedback feedback;
     private LocalDateTime date;
+    private String paymentId;
 }

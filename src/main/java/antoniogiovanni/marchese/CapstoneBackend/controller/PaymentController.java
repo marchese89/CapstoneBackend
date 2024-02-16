@@ -43,9 +43,9 @@ public class PaymentController {
     @PostMapping("/confirm-payment")
     @PreAuthorize("hasAnyAuthority('STUDENT')")
     public PaymentResponseDTO confirmPayment(@RequestBody PaymentConfirmDTO paymentConfirmDTO,@AuthenticationPrincipal User currentUser) throws StripeException, MessagingException, IOException {
-        String message = stripeService.confirmPayment(paymentConfirmDTO);
-        solutionService.acceptSolution(paymentConfirmDTO.solutionId(),(Student) currentUser);
-        return new PaymentResponseDTO(message);
+        String idPaymentIntent = stripeService.confirmPayment(paymentConfirmDTO);
+        solutionService.acceptSolution(paymentConfirmDTO.solutionId(),idPaymentIntent,(Student) currentUser);
+        return new PaymentResponseDTO("payment ok");
     }
 
 }

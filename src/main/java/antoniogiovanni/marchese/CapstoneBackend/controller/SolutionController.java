@@ -88,9 +88,9 @@ public class SolutionController {
         return solutionService.getSolutionByRequestIdAndTeacher(requestId,(Teacher)currentUser);
     }
 
-    @PreAuthorize("hasAnyAuthority('STUDENT')")
-    @PutMapping("/acceptSolution/{solutionId}")
-    public ResponseDTO acceptSolution(@PathVariable Long solutionId,@AuthenticationPrincipal User currentUser) throws IOException, MessagingException {
-        return new ResponseDTO(solutionService.acceptSolution(solutionId,(Student) currentUser).getId());
-    }
+//    @PreAuthorize("hasAnyAuthority('STUDENT')")
+//    @PutMapping("/acceptSolution/{solutionId}")
+//    public ResponseDTO acceptSolution(@PathVariable Long solutionId,@AuthenticationPrincipal User currentUser) throws IOException, MessagingException {
+//        return new ResponseDTO(solutionService.acceptSolution(solutionId,(Student) currentUser).getId());
+//    }
 }

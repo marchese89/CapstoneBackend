@@ -4,14 +4,9 @@ import antoniogiovanni.marchese.CapstoneBackend.payloads.PaymentConfirmDTO;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
-import com.stripe.model.PaymentMethod;
-import com.stripe.param.PaymentIntentConfirmParams;
 import com.stripe.param.PaymentIntentCreateParams;
-import com.stripe.param.PaymentMethodCreateParams;
-import com.stripe.param.TokenCreateParams;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import com.stripe.model.Token;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,10 +38,10 @@ public class StripeService {
         params.put("amount", paymentConfirmDTO.amount());
         params.put("currency", paymentConfirmDTO.currency());
         params.put("confirm", true);
-        params.put("return_url","http://localhost:3000");
+        params.put("return_url", "http://localhost:3000");
         PaymentIntent paymentIntent = PaymentIntent.create(params);
 
-        return "Payment confirmed!";
+        return paymentIntent.getId();
     }
 
 

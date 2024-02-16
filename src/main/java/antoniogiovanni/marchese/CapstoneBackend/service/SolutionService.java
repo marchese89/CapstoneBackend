@@ -130,7 +130,7 @@ public class SolutionService {
         return solutionRepository.findById(id).orElseThrow(()->new NotFoundException(id));
     }
 
-    public Solution acceptSolution(Long solutionId, Student student) throws IOException, MessagingException {
+    public Solution acceptSolution(Long solutionId, String idPaymentIntent, Student student) throws IOException, MessagingException {
         Solution solution = this.findById(solutionId);
         Request request = requestService.findById(solution.getRequest().getId());
         if(solution.getRequest().getStudent().getId() != student.getId()){
@@ -139,13 +139,15 @@ public class SolutionService {
         //update solution url from solution to request
         request.setSolutionUrl(solution.getSolutionUrl());
         request.setRequestState(RequestState.CLOSED);
+        request.setPaymentId(idPaymentIntent);
         List<Solution> solutionList = request.getSolutionList();
         Iterator<Solution> it = solutionList.iterator();
+        Teacher teacher = null;
         while (it.hasNext()){
             Solution s = it.next();
             if(s.getId() == solutionId){
                 s.setState(SolutionState.ACCEPTED);
-                emailService.sendEmail(s.getTeacher().getEmail(),"Soluzione Accettata","Salve,\nla tua soluzione è stata acquistata\n\ncontrolla il tuo profilo.");
+                teacher = s.getTeacher();
             }else{
                 s.setState(SolutionState.REJECTED);
                 emailService.sendEmail(s.getTeacher().getEmail(),"Soluzione Rifiutata","Salve,\nla tua soluzione è stata rifiutata\n\ncontrolla il tuo profilo.");
@@ -181,25 +183,22 @@ public class SolutionService {
         invoiceService.save(invoice);
         //send email with invoice to student
         MimeMessage message = emailSender.createMimeMessage();
-
-        // Enable multipart support
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
-
-        // Set recipient
         helper.setTo(request.getStudent().getEmail());
-
-        // Set subject
-        helper.setSubject("Fattuta Richiesta");
-
-        // Set text
+        helper.setSubject("Fattura Richiesta");
         helper.setText("Salve "+request.getStudent().getName()+",\nGrazie per il tuo acquisto.\ntrovi la fattura in allegato.");
-
         FileSystemResource file = new FileSystemResource(new File(filePath));
-        // Add attachment
         helper.addAttachment(file.getFilename(), file);
-
-        // Send email
         emailSender.send(message);
+
+        //send email with invoice to teacher
+        MimeMessage message2 = emailSender.createMimeMessage();
+        MimeMessageHelper helper2 = new MimeMessageHelper(message2, true);
+        helper2.setTo(teacher.getEmail());
+        helper2.setSubject("Fattura Soluzione Accettata");
+        helper2.setText("Salve "+ teacher.getName() +" "+teacher.getSurname()+",\nla tua soluzione è stata acquistata\n\ntrovi la fattura in allegato.");
+        helper2.addAttachment(file.getFilename(), file);
+        emailSender.send(message2);
 
         return solutionRepository.save(solution);
     }
