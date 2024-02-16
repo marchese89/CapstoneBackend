@@ -46,6 +46,12 @@ public class RequestController {
         if (file.isEmpty()) {
             throw new BadRequestException("file cannot be empty");
         }
+        //type validation
+        String contentType = file.getContentType();
+        if(!(contentType.startsWith("image/")||contentType.equalsIgnoreCase("application/pdf"))){
+            throw new BadRequestException("unsupported file type");
+        }
+
         String originalFileName = file.getOriginalFilename();
 
         String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));

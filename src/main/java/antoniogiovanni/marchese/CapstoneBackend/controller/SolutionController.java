@@ -47,6 +47,11 @@ public class SolutionController {
         if (file.isEmpty()) {
             throw new BadRequestException("file cannot be empty");
         }
+        //type validation
+        String contentType = file.getContentType();
+        if(!(contentType.startsWith("image/")||contentType.equalsIgnoreCase("application/pdf"))){
+            throw new BadRequestException("unsupported file type");
+        }
         if(!solutionService.canSaveSolution(requestId,(Teacher) currentUser)){
             throw new UnauthorizedException("you cannot send more than one solution per request");
         }
