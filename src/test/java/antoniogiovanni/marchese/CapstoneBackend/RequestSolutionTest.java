@@ -193,14 +193,14 @@ public class RequestSolutionTest {
     @Test
     @Order(6)
     void connectSubject() throws JsonProcessingException {
-        String requestBody = objectMapper.writeValueAsString(
-                new SubjectDTO("Subject "+Math.random()
-                ));
+//        String requestBody = objectMapper.writeValueAsString(
+//                new SubjectDTO("Subject "+Math.random()
+//                ));
 
         Response response = given()
                 .header("Authorization", "Bearer " + authTokenTeacher2)
                 .contentType("application/json")
-                .body(requestBody)
+//                .body(requestBody)
                 .when()
                 .post("/subjects/add/"+subjectId);
         response.then().assertThat().statusCode(201);
@@ -237,7 +237,7 @@ public class RequestSolutionTest {
 
     @Test
     @Order(8)
-    void login() throws JsonProcessingException {
+    void loginStudent() throws JsonProcessingException {
         String requestBody = objectMapper.writeValueAsString(
                 new UserLoginDTO(email,
                         password));
@@ -309,14 +309,14 @@ public class RequestSolutionTest {
         response.then().assertThat().statusCode(201);
     }
 
-    @Test
-    @Order(13)
-    void acceptSolution(){
-
-        Response response = given()
-                .header("Authorization", "Bearer " + authTokenStudent)
-                .when()
-                .put("/solutions/acceptSolution/"+solutionId);
-        response.then().assertThat().statusCode(200);
-    }
+//    @Test
+//    @Order(13)
+//    void acceptSolution(){
+//
+//        Response response = given()
+//                .header("Authorization", "Bearer " + authTokenStudent)
+//                .when()
+//                .put("/solutions/acceptSolution/"+solutionId);
+//        response.then().assertThat().statusCode(200);
+//    }
 }

@@ -180,6 +180,7 @@ public class SolutionService {
         invoice.setNumber(invoiceService.getMaxInvoiceNumber()+1);
         invoice.setIssuingDate(LocalDate.now());
         invoice.setRequest(request);
+        invoice.setTotal(solution.getPrice());
         invoiceService.save(invoice);
         //send email with invoice to student
         MimeMessage message = emailSender.createMimeMessage();

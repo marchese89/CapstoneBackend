@@ -25,4 +25,6 @@ public class Invoice {
     @OneToOne
     @JsonIgnore
     private Request request;
+
+    private Long total;
 }
