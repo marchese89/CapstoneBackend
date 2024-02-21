@@ -55,30 +55,8 @@ public class SolutionController {
         if(!solutionService.canSaveSolution(requestId,(Teacher) currentUser)){
             throw new UnauthorizedException("you cannot send more than one solution per request");
         }
-        String originalFileName = file.getOriginalFilename();
 
-        String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
-
-        String filePath;
-        long n = 1;
-        File f = new File(uploadDir + File.separator + "solutions"+ File.separator + n + fileExtension);
-
-        while(f.exists()){
-            n++;
-            f = new File(uploadDir + File.separator + "solutions"+ File.separator + n + fileExtension);
-        }
-
-        try {
-            byte[] bytes = file.getBytes();
-            filePath = uploadDir + File.separator + "solutions"+ File.separator + n + fileExtension;
-            Files.write(Path.of(filePath), bytes);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new BadRequestException("problems during upload");
-        }
-
-        return new ResponseDTO(solutionService.save(filePath,requestId,price,(Teacher) currentUser).getId());
+        return new ResponseDTO(solutionService.save(file,requestId,price,(Teacher) currentUser).getId());
     }
 
     @PreAuthorize("hasAnyAuthority('STUDENT')")

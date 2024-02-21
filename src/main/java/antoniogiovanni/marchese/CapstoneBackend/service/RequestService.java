@@ -1,5 +1,6 @@
 package antoniogiovanni.marchese.CapstoneBackend.service;
 
+import antoniogiovanni.marchese.CapstoneBackend.exceptions.BadRequestException;
 import antoniogiovanni.marchese.CapstoneBackend.exceptions.NotFoundException;
 import antoniogiovanni.marchese.CapstoneBackend.exceptions.UnauthorizedException;
 import antoniogiovanni.marchese.CapstoneBackend.model.*;
@@ -8,12 +9,18 @@ import antoniogiovanni.marchese.CapstoneBackend.model.enums.SolutionState;
 import antoniogiovanni.marchese.CapstoneBackend.payloads.RequestDTO;
 import antoniogiovanni.marchese.CapstoneBackend.repository.RequestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,6 +41,9 @@ public class RequestService {
     @Autowired
     private EmailService emailService;
 
+    @Value("${upload.dir}")
+    private String uploadDir;
+
     public Request findById(Long id){
        return requestRepository.findById(id).orElseThrow(()->new NotFoundException(id));
     }
@@ -42,9 +52,32 @@ public class RequestService {
         return requestRepository.save(request);
     }
 
-    public Request save(String questionUrl, Student student, RequestDTO requestDTO){
+    public Request save(MultipartFile file, Student student, RequestDTO requestDTO){
+
+        String originalFileName = file.getOriginalFilename();
+
+        String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
+
+        String filePath;
+        long n = 1;
+        File f = new File(uploadDir + File.separator + "requests"+ File.separator + n + fileExtension);
+
+        while(f.exists()){
+            n++;
+            f = new File(uploadDir + File.separator + "requests"+ File.separator + n + fileExtension);
+        }
+        try {
+            byte[] bytes = file.getBytes();
+            filePath = uploadDir + File.separator + "requests"+ File.separator + n + fileExtension;
+            Files.write(Path.of(filePath), bytes);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new BadRequestException("problems during upload");
+        }
+
         Request request = new Request();
-        request.setQuestionUrl(questionUrl);
+        request.setQuestionUrl(filePath);
         request.setTitle(requestDTO.title());
         Subject subject = subjectService.findById(requestDTO.subjectId());
         request.setSubject(subject);

@@ -52,29 +52,9 @@ public class RequestController {
             throw new BadRequestException("unsupported file type");
         }
 
-        String originalFileName = file.getOriginalFilename();
 
-        String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
-
-        String filePath;
-        long n = 1;
-        File f = new File(uploadDir + File.separator + "requests"+ File.separator + n + fileExtension);
-
-        while(f.exists()){
-            n++;
-            f = new File(uploadDir + File.separator + "requests"+ File.separator + n + fileExtension);
-        }
-        try {
-            byte[] bytes = file.getBytes();
-            filePath = uploadDir + File.separator + "requests"+ File.separator + n + fileExtension;
-            Files.write(Path.of(filePath), bytes);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new BadRequestException("problems during upload");
-        }
         RequestDTO requestDTO = new RequestDTO(requestTitle,subjectId);
-        return new ResponseDTO(requestService.save(filePath,(Student) currentUser,requestDTO).getId());
+        return new ResponseDTO(requestService.save(file,(Student) currentUser,requestDTO).getId());
     }
 
     @GetMapping("/byTeacher")

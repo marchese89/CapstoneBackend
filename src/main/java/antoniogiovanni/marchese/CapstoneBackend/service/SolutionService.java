@@ -1,5 +1,6 @@
 package antoniogiovanni.marchese.CapstoneBackend.service;
 
+import antoniogiovanni.marchese.CapstoneBackend.exceptions.BadRequestException;
 import antoniogiovanni.marchese.CapstoneBackend.exceptions.NotFoundException;
 import antoniogiovanni.marchese.CapstoneBackend.exceptions.UnauthorizedException;
 import antoniogiovanni.marchese.CapstoneBackend.model.*;
@@ -16,11 +17,14 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.Iterator;
 import java.util.List;
@@ -72,7 +76,31 @@ public class SolutionService {
         return ok;
     }
 
-    public Solution save(String filePath,Long requestId,Long price, Teacher teacher){
+    public Solution save(MultipartFile file, Long requestId, Long price, Teacher teacher){
+
+        String originalFileName = file.getOriginalFilename();
+
+        String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
+
+        String filePath;
+        long n = 1;
+        File f = new File(uploadDir + File.separator + "solutions"+ File.separator + n + fileExtension);
+
+        while(f.exists()){
+            n++;
+            f = new File(uploadDir + File.separator + "solutions"+ File.separator + n + fileExtension);
+        }
+
+        try {
+            byte[] bytes = file.getBytes();
+            filePath = uploadDir + File.separator + "solutions"+ File.separator + n + fileExtension;
+            Files.write(Path.of(filePath), bytes);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new BadRequestException("problems during upload");
+        }
+
         Solution solution = new Solution();
         solution.setSolutionUrl(filePath);
         Request request = requestService.findById(requestId);

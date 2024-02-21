@@ -1,37 +1,27 @@
 package antoniogiovanni.marchese.CapstoneBackend.payloads;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
-public record UserModifyDTO(@NotNull
-                            @NotEmpty
+public record UserModifyDTO(@NotBlank
                             String name,
-                            @NotNull
-                            @NotEmpty
+                            @NotBlank
                             String surname,
                             @Email
+                            @NotBlank
                             String email,
-                            @NotNull
-                            @NotEmpty
+                            @NotBlank
                             @Size(min = 16,max = 16)
                             String cf,
-                            @NotNull
-                            @NotEmpty
+                            @NotBlank
                             String street,
-                            @NotNull
-                            @NotEmpty
+                            @NotBlank
                             String houseNumber,
-                            @NotNull
-                            @NotEmpty
+                            @NotBlank
                             String city,
-                            @NotNull
-                            @NotEmpty
+                            @NotBlank
                             @Size(min = 2,max = 2)
                             String province,
-                            @NotNull
-                            @NotEmpty
+                            @NotBlank
                             @Size(min = 5,max = 5)
                             String postalCode,
                             String piva
