@@ -1,10 +1,15 @@
 <html>
-<head></head>
+<head>
 <style>
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>README</title>
 p{
 font-size: 18px;
 }
 </style>
+</head>
+
 <body>
 <h1>Student Support</h1>
 <hr>
