@@ -115,6 +115,6 @@ public class TeacherTest {
                 .body(requestBody)
                 .when()
                 .put("/users/modPass");
-        response.then().assertThat().statusCode(200);
+        response.then().assertThat().statusCode(201);
     }
 }

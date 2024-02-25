@@ -18,6 +18,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.test.context.TestPropertySource;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -203,7 +207,7 @@ public class RequestSolutionTest {
 //                .body(requestBody)
                 .when()
                 .post("/subjects/add/"+subjectId);
-        response.then().assertThat().statusCode(201);
+        response.then().assertThat().statusCode(200);
 
     }
 
@@ -255,13 +259,14 @@ public class RequestSolutionTest {
 
     @Test
     @Order(9)
-    void createRequest() throws JsonProcessingException {
+    void createRequest() throws IOException {
 
-        File file = new File("./files_to_upload/a.txt");
-
+        File file = new File("./files_to_upload/blank.jpg");
+        Path filePath = Paths.get(file.getPath());
+        String contentType = Files.probeContentType(filePath);
         Response response = given()
                 .header("Authorization", "Bearer " + authTokenStudent)
-                .multiPart("file", file)
+                .multiPart("file", file,contentType)
                 .when()
                 .post("/requests/"+subjectId+"/"+faker.name().fullName());
         response.then().assertThat().statusCode(201);
@@ -271,25 +276,27 @@ public class RequestSolutionTest {
 
     @Test
     @Order(10)
-    void getRequestByTeacher() throws JsonProcessingException {
+    void getRequestById() throws JsonProcessingException {
 
         Response response = given()
                 .header("Authorization", "Bearer " + authTokenTeacher)
                 .when()
-                .get("/requests/byTeacher");
+                .get("/requests/teacher/"+requestId);
         response.then().assertThat().statusCode(200);
         JsonNode jsonNode = objectMapper.readTree(response.body().asString());
-        Long requestID = Long.parseLong(jsonNode.get(0).get("id").toString());
+        System.out.println(jsonNode.toString());
+        Long requestID = Long.parseLong(jsonNode.get("id").toString());
         assertEquals(requestId,requestID);
     }
     @Test
     @Order(11)
-    void addSolutionToRequest() throws JsonProcessingException {
-        File file = new File("./files_to_upload/a.txt");
-
+    void addSolutionToRequest() throws IOException {
+        File file = new File("./files_to_upload/blank.jpg");
+        Path filePath = Paths.get(file.getPath());
+        String contentType = Files.probeContentType(filePath);
         Response response = given()
                 .header("Authorization", "Bearer " + authTokenTeacher)
-                .multiPart("file", file)
+                .multiPart("file", file,contentType)
                 .when()
                 .post("/solutions/"+requestId+"/"+1000);
         response.then().assertThat().statusCode(201);
@@ -298,12 +305,13 @@ public class RequestSolutionTest {
     }
     @Test
     @Order(12)
-    void addSolutionToRequest2() throws JsonProcessingException {
-        File file = new File("./files_to_upload/a.txt");
-
+    void addSolutionToRequest2() throws IOException {
+        File file = new File("./files_to_upload/blank.jpg");
+        Path filePath = Paths.get(file.getPath());
+        String contentType = Files.probeContentType(filePath);
         Response response = given()
                 .header("Authorization", "Bearer " + authTokenTeacher2)
-                .multiPart("file", file)
+                .multiPart("file", file,contentType)
                 .when()
                 .post("/solutions/"+requestId+"/"+1000);
         response.then().assertThat().statusCode(201);

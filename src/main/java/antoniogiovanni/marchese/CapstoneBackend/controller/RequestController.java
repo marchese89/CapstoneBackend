@@ -49,7 +49,7 @@ public class RequestController {
         //type validation
         String contentType = file.getContentType();
         if(!(contentType.startsWith("image/")||contentType.equalsIgnoreCase("application/pdf"))){
-            throw new BadRequestException("unsupported file type");
+            throw new BadRequestException("unsupported file type: "+ contentType);
         }
 
 

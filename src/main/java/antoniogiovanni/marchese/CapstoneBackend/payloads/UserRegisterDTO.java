@@ -28,7 +28,7 @@ public record UserRegisterDTO(
         String cf,
         @NotNull
         @Enumerated(EnumType.STRING)
-        @NotBlank
+        @NotNull
         Role role,
         @NotNull
         @NotEmpty
